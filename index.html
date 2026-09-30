@@ -68,11 +68,11 @@ input[type=file]{display:none}
 
 <section class="hero">
 
-<div class="eyebrow">Una noche para recordar</div>
+<div class="eyebrow" id="welcome-message">Una noche para recordar</div>
 
-<h1>XV Años</h1>
+<h1 id="event-name">XV Años</h1>
 
-<div class="date">13 de marzo de 2027</div>
+<div class="date" id="event-date">13 de marzo de 2027</div>
 
 </section>
 
@@ -140,9 +140,58 @@ new URLSearchParams(window.location.search).get('evento')
 
 || 'xv-13-marzo-2027';
 
+
+
+
+  
 const {createClient}=window.supabase;
 
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let EVENT_DATA=null;
+
+
+  EVENT_DATA=data;
+
+  document.getElementById('event-name').textContent =
+
+    data.name;
+
+  document.getElementById('event-date').textContent =
+
+    new Date(data.event_date+'T00:00:00')
+
+      .toLocaleDateString('es-MX',{
+
+        day:'numeric',
+
+        month:'long',
+
+        year:'numeric'
+
+      });
+
+  document.getElementById('welcome-message').textContent =
+
+    data.welcome_message || 'Una noche para recordar';
+
+  document.documentElement.style.setProperty(
+
+    '--primary-color',
+
+    data.primary_color || '#111827'
+
+  );
+
+  document.documentElement.style.setProperty(
+
+    '--secondary-color',
+
+    data.secondary_color || '#D4AF37'
+
+  );
+
+}
 
 const picker=document.getElementById('picker');
 
@@ -182,7 +231,7 @@ const {data,error}=await db
 
 .from('events')
 
-.select('id')
+.select('*')
 
 .eq('slug',EVENT_SLUG)
 
@@ -199,6 +248,44 @@ return;
 }
 
 eventId=data.id;
+
+document.getElementById('event-name').textContent =
+
+data.name;
+
+document.getElementById('event-date').textContent =
+
+new Date(data.event_date+'T00:00:00')
+
+.toLocaleDateString('es-MX',{
+
+  day:'numeric',
+
+  month:'long',
+
+  year:'numeric'
+
+});
+
+document.getElementById('welcome-message').textContent =
+
+data.welcome_message || 'Una noche para recordar';
+
+document.documentElement.style.setProperty(
+
+'--primary-color',
+
+data.primary_color || '#111827'
+
+);
+
+document.documentElement.style.setProperty(
+
+'--secondary-color',
+
+data.secondary_color || '#D4AF37'
+
+);
 
 await loadGallery();
 
