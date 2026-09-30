@@ -275,9 +275,8 @@ const v=document.createElement('video');
 v.src=urlData.signedUrl;
 
 v.controls=true;
-v.preload='metdata';
-v.setAttribute('controls','');
-v.setAttribute(playsinline',''(;
+
+v.playsInline=true;
 
 wrap.appendChild(v);
 
