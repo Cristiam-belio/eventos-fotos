@@ -196,6 +196,28 @@ return;
 
 eventId=data.id;
 
+document.querySelector('.eyebrow').textContent =
+
+  data.welcome_message || 'Una noche para recordar';
+
+document.querySelector('.hero h1').textContent =
+
+  data.name;
+
+document.querySelector('.date').textContent =
+
+  new Date(data.event_date+'T00:00:00')
+
+    .toLocaleDateString('es-MX',{
+
+      day:'numeric',
+
+      month:'long',
+
+      year:'numeric'
+
+    });
+
 await loadGallery();
 
 }
