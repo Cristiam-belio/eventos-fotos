@@ -417,6 +417,7 @@ Guardar cambios
 </main>
 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
 <script>
 
@@ -650,6 +651,60 @@ editEvent(event);
 });
 
 eventsList.appendChild(box);
+  
+const eventUrl =
+
+  `${window.location.origin}/?evento=${encodeURIComponent(event.slug)}`;
+
+const qrContainer = document.createElement('div');
+
+qrContainer.style.marginTop = '16px';
+
+qrContainer.style.textAlign = 'center';
+
+const qrTitle = document.createElement('div');
+
+qrTitle.textContent = 'Código QR del evento';
+
+qrTitle.style.marginBottom = '10px';
+
+qrTitle.style.fontWeight = '600';
+
+const qrCode = document.createElement('div');
+
+qrCode.style.display = 'inline-block';
+
+const eventLink = document.createElement('a');
+
+eventLink.href = eventUrl;
+
+eventLink.target = '_blank';
+
+eventLink.rel = 'noopener';
+
+eventLink.textContent = 'Abrir página del evento';
+
+eventLink.style.display = 'block';
+
+eventLink.style.marginTop = '10px';
+
+qrContainer.appendChild(qrTitle);
+
+qrContainer.appendChild(qrCode);
+
+qrContainer.appendChild(eventLink);
+
+box.appendChild(qrContainer);
+
+new QRCode(qrCode,{
+
+  text:eventUrl,
+
+  width:160,
+
+  height:160
+
+});
 
 }
 
