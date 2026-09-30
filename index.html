@@ -262,7 +262,7 @@ const img=document.createElement('img');
 
 img.loading='lazy';
 
-img.src=urlData.publicUrl;
+img.src=urlData.signedUrl;
 
 img.alt='Recuerdo del evento';
 
@@ -272,7 +272,7 @@ wrap.appendChild(img);
 
 const v=document.createElement('video');
 
-v.src=urlData.publicUrl;
+v.src=urlData.signedUrl;
 
 v.controls=true;
 
