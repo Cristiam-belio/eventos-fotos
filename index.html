@@ -148,50 +148,6 @@ const {createClient}=window.supabase;
 
 const db=createClient(SUPABASE_URL,SUPABASE_KEY);
 
-let EVENT_DATA=null;
-
-
-  EVENT_DATA=data;
-
-  document.getElementById('event-name').textContent =
-
-    data.name;
-
-  document.getElementById('event-date').textContent =
-
-    new Date(data.event_date+'T00:00:00')
-
-      .toLocaleDateString('es-MX',{
-
-        day:'numeric',
-
-        month:'long',
-
-        year:'numeric'
-
-      });
-
-  document.getElementById('welcome-message').textContent =
-
-    data.welcome_message || 'Una noche para recordar';
-
-  document.documentElement.style.setProperty(
-
-    '--primary-color',
-
-    data.primary_color || '#111827'
-
-  );
-
-  document.documentElement.style.setProperty(
-
-    '--secondary-color',
-
-    data.secondary_color || '#D4AF37'
-
-  );
-
-}
 
 const picker=document.getElementById('picker');
 
@@ -248,6 +204,8 @@ return;
 }
 
 eventId=data.id;
+await loadGallery();
+}
 
 document.getElementById('event-name').textContent =
 
