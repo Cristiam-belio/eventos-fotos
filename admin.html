@@ -217,8 +217,54 @@ margin:25px 0;
 </head>
 
 <body>
+<div id="loginScreen" style="max-width:420px;margin:80px auto;padding:24px;">
 
-<main class="wrap">
+  <h1>Administración</h1>
+
+  <p>Inicia sesión para continuar</p>
+
+  <input
+
+    id="loginEmail"
+
+    type="email"
+
+    placeholder="Correo electrónico"
+
+    style="width:100%;padding:12px;margin:8px 0;"
+
+  >
+
+  <input
+
+    id="loginPassword"
+
+    type="password"
+
+    placeholder="Contraseña"
+
+    style="width:100%;padding:12px;margin:8px 0;"
+
+  >
+
+  <button
+
+    id="loginButton"
+
+    style="width:100%;padding:14px;margin-top:10px;"
+
+  >
+
+    Iniciar sesión
+
+  </button>
+
+  <p id="loginMessage"></p>
+
+</div>
+
+  
+<main class="wrap" id="adminPanel" style="display:none;">
 
 <div class="card">
 
@@ -385,6 +431,47 @@ SUPABASE_URL,
 SUPABASE_KEY
 
 );
+
+const loginScreen=document.getElementById('loginScreen');
+
+const adminPanel=document.getElementById('adminPanel');
+
+const loginButton=document.getElementById('loginButton');
+
+const loginMessage=document.getElementById('loginMessage');
+
+loginButton.addEventListener('click',async()=>{
+
+  const email=document.getElementById('loginEmail').value.trim();
+
+  const password=document.getElementById('loginPassword').value;
+
+  loginMessage.textContent='Iniciando sesión...';
+
+  const {data,error}=await db.auth.signInWithPassword({
+
+    email,
+
+    password
+
+  });
+
+  if(error){
+
+    loginMessage.textContent='Correo o contraseña incorrectos.';
+
+    return;
+
+  }
+
+  loginScreen.style.display='none';
+
+  adminPanel.style.display='block';
+
+  loginMessage.textContent='';
+
+});
+  
 
 const nameInput=
 
