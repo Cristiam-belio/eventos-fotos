@@ -265,6 +265,12 @@ margin:25px 0;
 
   
 <main class="wrap" id="adminPanel" style="display:none;">
+<button id="logoutButton" type="button" style="float:right;padding:8px 14px;cursor:pointer;">
+
+  Cerrar sesión
+
+</button>
+  
 
 <div class="card">
 
@@ -439,6 +445,36 @@ const adminPanel=document.getElementById('adminPanel');
 const loginButton=document.getElementById('loginButton');
 
 const loginMessage=document.getElementById('loginMessage');
+
+async function checkSession(){
+
+  const {data:{session}}=await db.auth.getSession();
+
+  if(session){
+
+    loginScreen.style.display='none';
+
+    adminPanel.style.display='block';
+
+  }
+
+}
+
+checkSession();
+  document.getElementById('logoutButton').addEventListener('click',async()=>{
+
+  await db.auth.signOut();
+
+  adminPanel.style.display='none';
+
+  loginScreen.style.display='block';
+
+  document.getElementById('loginPassword').value='';
+
+  loginMessage.textContent='';
+
+});
+  
 
 loginButton.addEventListener('click',async()=>{
 
