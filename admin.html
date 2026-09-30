@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>Administración del evento</title>
+
+<style>
+
+*{box-sizing:border-box}
+
+body{
+
+margin:0;
+
+font-family:system-ui,-apple-system,Segoe UI,sans-serif;
+
+background:#f5f2ee;
+
+color:#2b2723;
+
+}
+
+.wrap{
+
+max-width:600px;
+
+margin:auto;
+
+padding:25px 16px;
+
+}
+
+.card{
+
+background:#fff;
+
+border-radius:20px;
+
+padding:24px;
+
+box-shadow:0 5px 24px #0000000b;
+
+}
+
+h1{
+
+font-family:Georgia,serif;
+
+font-weight:500;
+
+margin-top:0;
+
+}
+
+label{
+
+display:block;
+
+font-weight:600;
+
+margin-top:18px;
+
+margin-bottom:7px;
+
+}
+
+input{
+
+width:100%;
+
+padding:13px;
+
+border:1px solid #ddd;
+
+border-radius:10px;
+
+font-size:16px;
+
+}
+
+input[type=color]{
+
+height:50px;
+
+padding:4px;
+
+}
+
+button{
+
+width:100%;
+
+margin-top:24px;
+
+padding:15px;
+
+border:0;
+
+border-radius:12px;
+
+background:#2b2723;
+
+color:#fff;
+
+font-size:16px;
+
+font-weight:600;
+
+cursor:pointer;
+
+}
+
+.status{
+
+margin-top:15px;
+
+font-size:14px;
+
+}
+
+.success{
+
+color:#3b6b45;
+
+}
+
+.error{
+
+color:#a33;
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<main class="wrap">
+
+<div class="card">
+
+<h1>Administrar evento</h1>
+
+<p>Modifica los datos de tu evento.</p>
+
+<label>Nombre del evento</label>
+
+<input id="name" type="text">
+
+<label>Fecha</label>
+
+<input id="date" type="date">
+
+<label>Mensaje de bienvenida</label>
+
+<input id="welcome" type="text">
+
+<label>Color principal</label>
+
+<input id="primary" type="color">
+
+<label>Color secundario</label>
+
+<input id="secondary" type="color">
+
+<button id="save">
+
+Guardar cambios
+
+</button>
+
+<div id="status" class="status"></div>
+
+</div>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL=
+
+'https://qzsukbfxqdyhpbzlzlwd.supabase.co';
+
+const SUPABASE_KEY=
+
+'sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
+
+const {createClient}=window.supabase;
+
+const db=createClient(
+
+SUPABASE_URL,
+
+SUPABASE_KEY
+
+);
+
+const EVENT_SLUG='xv-13-marzo-2027';
+
+const nameInput=document.getElementById('name');
+
+const dateInput=document.getElementById('date');
+
+const welcomeInput=document.getElementById('welcome');
+
+const primaryInput=document.getElementById('primary');
+
+const secondaryInput=document.getElementById('secondary');
+
+const saveButton=document.getElementById('save');
+
+const status=document.getElementById('status');
+
+async function loadEvent(){
+
+const {data,error}=await db
+
+.from('events')
+
+.select('*')
+
+.eq('slug',EVENT_SLUG)
+
+.single();
+
+if(error){
+
+status.textContent=
+
+'No se pudo cargar el evento.';
+
+status.className='status error';
+
+console.error(error);
+
+return;
+
+}
+
+nameInput.value=data.name || '';
+
+dateInput.value=data.event_date || '';
+
+welcomeInput.value=
+
+data.welcome_message || '';
+
+primaryInput.value=
+
+data.primary_color || '#111827';
+
+secondaryInput.value=
+
+data.secondary_color || '#D4AF37';
+
+}
+
+saveButton.addEventListener('click',async()=>{
+
+saveButton.disabled=true;
+
+saveButton.textContent='Guardando...';
+
+const {error}=await db
+
+.from('events')
+
+.update({
+
+name:nameInput.value,
+
+event_date:dateInput.value,
+
+welcome_message:welcomeInput.value,
+
+primary_color:primaryInput.value,
+
+secondary_color:secondaryInput.value
+
+})
+
+.eq('slug',EVENT_SLUG);
+
+if(error){
+
+status.textContent=
+
+'No se pudieron guardar los cambios.';
+
+status.className='status error';
+
+console.error(error);
+
+}else{
+
+status.textContent=
+
+'Cambios guardados correctamente.';
+
+status.className='status success';
+
+}
+
+saveButton.disabled=false;
+
+saveButton.textContent='Guardar cambios';
+
+});
+
+loadEvent();
+
+</script>
+
+</body>
+
+</html>
