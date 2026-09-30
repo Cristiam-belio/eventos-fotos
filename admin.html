@@ -688,11 +688,26 @@ eventLink.style.display = 'block';
 
 eventLink.style.marginTop = '10px';
 
+const downloadQr = document.createElement('button');
+
+downloadQr.type = 'button';
+
+downloadQr.textContent = 'Descargar QR';
+
+downloadQr.style.marginTop = '10px';
+
+downloadQr.style.padding = '10px 16px';
+
+downloadQr.style.cursor = 'pointer';
+
 qrContainer.appendChild(qrTitle);
 
 qrContainer.appendChild(qrCode);
 
 qrContainer.appendChild(eventLink);
+
+qrContainer.appendChild(downloadQr);
+  
 
 box.appendChild(qrContainer);
 
@@ -703,6 +718,36 @@ new QRCode(qrCode,{
   width:160,
 
   height:160
+
+});
+
+downloadQr.addEventListener('click',()=>{
+
+  const img = qrCode.querySelector('img');
+
+  const canvas = qrCode.querySelector('canvas');
+
+  const qrUrl = img?.src || canvas?.toDataURL('image/png');
+
+  if(!qrUrl){
+
+    alert('No se pudo generar el archivo QR.');
+
+    return;
+
+  }
+
+  const link = document.createElement('a');
+
+  link.href = qrUrl;
+
+  link.download = `QR-${event.slug}.png`;
+
+  document.body.appendChild(link);
+
+  link.click();
+
+  link.remove();
 
 });
 
