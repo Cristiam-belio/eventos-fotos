@@ -240,13 +240,17 @@ gallery.innerHTML='';
 
 for(const item of data){
 
-const {data:urlData}=db
+const {data:urlData,error:urlError}=await db
 
 .storage
 
 .from(BUCKET)
 
-.getPublicUrl(item.file_path);
+.createSignedUrl(item.file_path,3600);
+if(urlError){
+  console.error(urlError);
+  continue;
+}
 
 const wrap=document.createElement('div');
 
