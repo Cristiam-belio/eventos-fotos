@@ -30,7 +30,7 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background
 
 .card h2{font-size:21px;margin-top:0}
 
-.upload{display:block;width:100%;padding:16px;border:0;border-radius:14px;background:#2b2723;color:#fff;font-size:17px;font-weight:600;text-align:center;cursor:pointer}
+.upload{display:block;width:100%;padding:16px;border:0;border-radius:14px;background:var(--primary-color,#2b2723);color:#fff;font-size:17px;font-weight:600;text-align:center;cursor:pointer}
 
 .upload:active{transform:scale(.99)}
 
@@ -42,7 +42,7 @@ input[type=file]{display:none}
 
 .progress{height:8px;background:#eee;border-radius:20px;overflow:hidden;margin-top:12px;display:none}
 
-.progress>div{height:100%;width:0;background:#2b2723;transition:width .2s}
+.progress>div{height:100%;width:0;background:var(--primary-color,#2b2723);transition:width .2s}
 
 .gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
 
@@ -217,6 +217,21 @@ document.querySelector('.date').textContent =
       year:'numeric'
 
     });
+  document.documentElement.style.setProperty(
+
+  '--primary-color',
+
+  data.primary_color || '#2b2723'
+
+);
+
+document.documentElement.style.setProperty(
+
+  '--secondary-color',
+
+  data.secondary_color || '#D4AF37'
+
+);
 
 await loadGallery();
 
