@@ -88,4 +88,380 @@ input[type=file]{display:none}
 
 Seleccionar fotos o videos
 
-<input id="picker" type="file" accept=
+<input id="picker" type="file" accept="image/*,video/*" multiple>
+
+</label>
+
+<div class="status" id="status">Aún no has seleccionado archivos.</div>
+
+<div class="progress" id="progress">
+
+<div id="bar"></div>
+
+</div>
+
+<p class="hint">
+
+Puedes seleccionar varios archivos. Las fotos y videos se guardarán en el evento.
+
+</p>
+
+</div>
+
+<div class="card">
+
+<h2>🖼️ Galería</h2>
+
+<div id="gallery" class="empty">Cargando recuerdos…</div>
+
+</div>
+
+</main>
+
+<div class="foot">
+
+Evento privado · Comparte tus mejores recuerdos
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+
+const SUPABASE_URL='https://qzsukbfxqdyhpbzlzlwd.supabase.co';
+
+const SUPABASE_KEY='sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
+
+const BUCKET='event-media';
+
+const EVENT_SLUG='xv-13-marzo-2027';
+
+const {createClient}=window.supabase;
+
+const db=createClient(SUPABASE_URL,SUPABASE_KEY);
+
+const picker=document.getElementById('picker');
+
+const status=document.getElementById('status');
+
+const gallery=document.getElementById('gallery');
+
+const progress=document.getElementById('progress');
+
+const bar=document.getElementById('bar');
+
+let eventId=null;
+
+function setStatus(t,cls=''){
+
+status.textContent=t;
+
+status.className='status '+cls;
+
+}
+
+function safeName(name){
+
+return name.normalize('NFD')
+
+.replace(/[\u0300-\u036f]/g,'')
+
+.replace(/[^a-zA-Z0-9._-]/g,'-')
+
+.slice(-100);
+
+}
+
+async function loadEvent(){
+
+const {data,error}=await db
+
+.from('events')
+
+.select('id')
+
+.eq('slug',EVENT_SLUG)
+
+.single();
+
+if(error){
+
+setStatus('No pudimos conectar con el evento. Revisa la configuración de Supabase.','error');
+
+console.error(error);
+
+return;
+
+}
+
+eventId=data.id;
+
+await loadGallery();
+
+}
+
+async function loadGallery(){
+
+const {data,error}=await db
+
+.from('media')
+
+.select('file_path,media_type,created_at')
+
+.eq('event_id',eventId)
+
+.order('created_at',{ascending:false});
+
+if(error){
+
+gallery.className='empty';
+
+gallery.textContent='La galería aún no está disponible.';
+
+console.error(error);
+
+return;
+
+}
+
+if(!data.length){
+
+gallery.className='empty';
+
+gallery.textContent='Aquí aparecerán las fotos y videos compartidos.';
+
+return;
+
+}
+
+gallery.className='gallery';
+
+gallery.innerHTML='';
+
+for(const item of data){
+
+const {data:urlData}=db
+
+.storage
+
+.from(BUCKET)
+
+.getPublicUrl(item.file_path);
+
+const wrap=document.createElement('div');
+
+wrap.className='media-wrap';
+
+if(item.media_type==='photo'){
+
+const img=document.createElement('img');
+
+img.loading='lazy';
+
+img.src=urlData.publicUrl;
+
+img.alt='Recuerdo del evento';
+
+wrap.appendChild(img);
+
+}else{
+
+const v=document.createElement('video');
+
+v.src=urlData.publicUrl;
+
+v.controls=true;
+
+v.playsInline=true;
+
+wrap.appendChild(v);
+
+}
+
+const label=document.createElement('span');
+
+label.className='media-label';
+
+label.textContent=item.media_type==='photo'?'Foto':'Video';
+
+wrap.appendChild(label);
+
+gallery.appendChild(wrap);
+
+}
+
+}
+
+picker.addEventListener('change',async()=>{
+
+const files=[...picker.files];
+
+if(!files.length)return;
+
+const allowed=files.filter(
+
+f=>f.type.startsWith('image/')||f.type.startsWith('video/')
+
+);
+
+if(allowed.length!==files.length){
+
+setStatus(
+
+'Se omitieron archivos que no son fotos o videos.',
+
+'error'
+
+);
+
+}
+
+if(!eventId){
+
+await loadEvent();
+
+if(!eventId)return;
+
+}
+
+progress.style.display='block';
+
+bar.style.width='0%';
+
+let done=0;
+
+let failed=0;
+
+for(const file of allowed){
+
+if(file.size>50*1024*1024){
+
+failed++;
+
+continue;
+
+}
+
+const type=file.type.startsWith('image/')
+
+?'photo'
+
+:'video';
+
+const path=
+
+`${EVENT_SLUG}/${type}/${Date.now()}-${crypto.randomUUID()}-${safeName(file.name)}`;
+
+const {error:uploadError}=
+
+await db.storage
+
+.from(BUCKET)
+
+.upload(
+
+path,
+
+file,
+
+{
+
+contentType:file.type,
+
+cacheControl:'3600',
+
+upsert:false
+
+}
+
+);
+
+if(uploadError){
+
+failed++;
+
+console.error(uploadError);
+
+continue;
+
+}
+
+const {error:dbError}=
+
+await db.from('media').insert({
+
+event_id:eventId,
+
+file_name:file.name,
+
+file_path:path,
+
+media_type:type,
+
+file_size:file.size
+
+});
+
+if(dbError){
+
+failed++;
+
+console.error(dbError);
+
+continue;
+
+}
+
+done++;
+
+bar.style.width=
+
+Math.round(
+
+(done+failed)/allowed.length*100
+
+)+'%';
+
+setStatus(
+
+`Subiendo… ${done+failed} de ${allowed.length}`
+
+);
+
+}
+
+if(failed){
+
+setStatus(
+
+`Listo: ${done} archivo${done===1?'':'s'} subido${done===1?'':'s'}; ${failed} no se pudieron subir.`,
+
+'error'
+
+);
+
+}else{
+
+setStatus(
+
+`${done} archivo${done===1?'':'s'} compartido${done===1?'':'s'} correctamente.`,
+
+'success'
+
+);
+
+}
+
+picker.value='';
+
+await loadGallery();
+
+});
+
+loadEvent();
+
+</script>
+
+</body>
+
+</html>
