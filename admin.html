@@ -8,7 +8,7 @@
 
 <meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Administración del evento</title>
+<title>Administración de eventos</title>
 
 <style>
 
@@ -28,7 +28,7 @@ color:#2b2723;
 
 .wrap{
 
-max-width:600px;
+max-width:700px;
 
 margin:auto;
 
@@ -44,15 +44,21 @@ border-radius:20px;
 
 padding:24px;
 
+margin-bottom:18px;
+
 box-shadow:0 5px 24px #0000000b;
 
 }
 
-h1{
+h1,h2{
 
 font-family:Georgia,serif;
 
 font-weight:500;
+
+}
+
+h1{
 
 margin-top:0;
 
@@ -70,7 +76,7 @@ margin-bottom:7px;
 
 }
 
-input{
+input,select{
 
 width:100%;
 
@@ -81,6 +87,8 @@ border:1px solid #ddd;
 border-radius:10px;
 
 font-size:16px;
+
+background:#fff;
 
 }
 
@@ -96,7 +104,7 @@ button{
 
 width:100%;
 
-margin-top:24px;
+margin-top:22px;
 
 padding:15px;
 
@@ -113,6 +121,64 @@ font-size:16px;
 font-weight:600;
 
 cursor:pointer;
+
+}
+
+button:disabled{
+
+opacity:.6;
+
+}
+
+.event{
+
+border:1px solid #e5dfd8;
+
+border-radius:14px;
+
+padding:15px;
+
+margin-top:12px;
+
+}
+
+.event-name{
+
+font-weight:700;
+
+font-size:17px;
+
+}
+
+.event-date{
+
+font-size:14px;
+
+color:#756d65;
+
+margin-top:4px;
+
+}
+
+.event-slug{
+
+font-size:12px;
+
+color:#9a9188;
+
+margin-top:6px;
+
+word-break:break-all;
+
+}
+
+.event button{
+
+margin-top:12px;
+
+padding:10px;
+
+font-size:14px;
 
 }
 
@@ -136,6 +202,16 @@ color:#a33;
 
 }
 
+hr{
+
+border:0;
+
+border-top:1px solid #eee;
+
+margin:25px 0;
+
+}
+
 </style>
 
 </head>
@@ -146,37 +222,143 @@ color:#a33;
 
 <div class="card">
 
-<h1>Administrar evento</h1>
+<h1>Administración de eventos</h1>
 
-<p>Modifica los datos de tu evento.</p>
+<p>Crea y administra los eventos de tu plataforma.</p>
+
+<h2>Crear nuevo evento</h2>
 
 <label>Nombre del evento</label>
 
-<input id="name" type="text">
+<input
 
-<label>Fecha</label>
+id="name"
+
+type="text"
+
+placeholder="Ej. XV Años de Valeria">
+
+<label>Tipo de evento</label>
+
+<select id="event-type">
+
+<option value="XV Años">XV Años</option>
+
+<option value="Boda">Boda</option>
+
+<option value="Cumpleaños">Cumpleaños</option>
+
+<option value="Bautizo">Bautizo</option>
+
+<option value="Primera Comunión">Primera Comunión</option>
+
+<option value="Graduación">Graduación</option>
+
+<option value="Evento empresarial">Evento empresarial</option>
+
+<option value="Otro">Otro</option>
+
+</select>
+
+<label>Fecha del evento</label>
 
 <input id="date" type="date">
 
 <label>Mensaje de bienvenida</label>
 
-<input id="welcome" type="text">
+<input
+
+id="welcome"
+
+type="text"
+
+placeholder="Una noche para recordar">
 
 <label>Color principal</label>
 
-<input id="primary" type="color">
+<input id="primary" type="color" value="#2b2723">
 
 <label>Color secundario</label>
 
-<input id="secondary" type="color">
+<input id="secondary" type="color" value="#D4AF37">
 
-<button id="save">
+<button id="create">
+
+Crear evento
+
+</button>
+
+<div id="create-status" class="status"></div>
+
+</div>
+
+<div class="card">
+
+<h2>Eventos existentes</h2>
+
+<div id="events-list">
+
+Cargando eventos...
+
+</div>
+
+<div id="edit-status" class="status"></div>
+
+</div>
+
+<div class="card" id="edit-card" style="display:none">
+
+<h2>Editar evento</h2>
+
+<label>Nombre del evento</label>
+
+<input id="edit-name" type="text">
+
+<label>Tipo de evento</label>
+
+<select id="edit-type">
+
+<option value="XV Años">XV Años</option>
+
+<option value="Boda">Boda</option>
+
+<option value="Cumpleaños">Cumpleaños</option>
+
+<option value="Bautizo">Bautizo</option>
+
+<option value="Primera Comunión">Primera Comunión</option>
+
+<option value="Graduación">Graduación</option>
+
+<option value="Evento empresarial">Evento empresarial</option>
+
+<option value="Otro">Otro</option>
+
+</select>
+
+<label>Fecha del evento</label>
+
+<input id="edit-date" type="date">
+
+<label>Mensaje de bienvenida</label>
+
+<input id="edit-welcome" type="text">
+
+<label>Color principal</label>
+
+<input id="edit-primary" type="color">
+
+<label>Color secundario</label>
+
+<input id="edit-secondary" type="color">
+
+<button id="save-edit">
 
 Guardar cambios
 
 </button>
 
-<div id="status" class="status"></div>
+<div id="selected-id"></div>
 
 </div>
 
@@ -204,23 +386,61 @@ SUPABASE_KEY
 
 );
 
-const EVENT_SLUG='xv-13-marzo-2027';
+const nameInput=
 
-const nameInput=document.getElementById('name');
+document.getElementById('name');
 
-const dateInput=document.getElementById('date');
+const typeInput=
 
-const welcomeInput=document.getElementById('welcome');
+document.getElementById('event-type');
 
-const primaryInput=document.getElementById('primary');
+const dateInput=
 
-const secondaryInput=document.getElementById('secondary');
+document.getElementById('date');
 
-const saveButton=document.getElementById('save');
+const welcomeInput=
 
-const status=document.getElementById('status');
+document.getElementById('welcome');
 
-async function loadEvent(){
+const primaryInput=
+
+document.getElementById('primary');
+
+const secondaryInput=
+
+document.getElementById('secondary');
+
+const createButton=
+
+document.getElementById('create');
+
+const createStatus=
+
+document.getElementById('create-status');
+
+const eventsList=
+
+document.getElementById('events-list');
+
+let selectedEventId=null;
+
+function createSlug(text){
+
+return text
+
+.normalize('NFD')
+
+.replace(/[\u0300-\u036f]/g,'')
+
+.toLowerCase()
+
+.replace(/[^a-z0-9]+/g,'-')
+
+.replace(/^-+|-+$/g,'');
+
+}
+
+async function loadEvents(){
 
 const {data,error}=await db
 
@@ -228,17 +448,13 @@ const {data,error}=await db
 
 .select('*')
 
-.eq('slug',EVENT_SLUG)
-
-.single();
+.order('event_date',{ascending:true});
 
 if(error){
 
-status.textContent=
+eventsList.textContent=
 
-'No se pudo cargar el evento.';
-
-status.className='status error';
+'No se pudieron cargar los eventos.';
 
 console.error(error);
 
@@ -246,29 +462,247 @@ return;
 
 }
 
-nameInput.value=data.name || '';
+if(!data.length){
 
-dateInput.value=data.event_date || '';
+eventsList.textContent=
 
-welcomeInput.value=
+'Aún no hay eventos.';
 
-data.welcome_message || '';
-
-primaryInput.value=
-
-data.primary_color || '#111827';
-
-secondaryInput.value=
-
-data.secondary_color || '#D4AF37';
+return;
 
 }
 
-saveButton.addEventListener('click',async()=>{
+eventsList.innerHTML='';
 
-saveButton.disabled=true;
+for(const event of data){
 
-saveButton.textContent='Guardando...';
+const box=document.createElement('div');
+
+box.className='event';
+
+box.innerHTML=`
+
+<div class="event-name">
+
+${event.name}
+
+</div>
+
+<div class="event-date">
+
+${new Date(event.event_date+'T00:00:00')
+
+.toLocaleDateString('es-MX',{
+
+day:'numeric',
+
+month:'long',
+
+year:'numeric'
+
+})}
+
+</div>
+
+<div class="event-slug">
+
+${event.slug}
+
+</div>
+
+<button>
+
+Editar evento
+
+</button>
+
+`;
+
+box.querySelector('button')
+
+.addEventListener('click',()=>{
+
+editEvent(event);
+
+});
+
+eventsList.appendChild(box);
+
+}
+
+}
+
+function editEvent(event){
+
+selectedEventId=event.id;
+
+document.getElementById('edit-card')
+
+.style.display='block';
+
+document.getElementById('edit-name')
+
+.value=event.name || '';
+
+document.getElementById('edit-type')
+
+.value=event.event_type || 'Otro';
+
+document.getElementById('edit-date')
+
+.value=event.event_date || '';
+
+document.getElementById('edit-welcome')
+
+.value=event.welcome_message || '';
+
+document.getElementById('edit-primary')
+
+.value=event.primary_color || '#2b2723';
+
+document.getElementById('edit-secondary')
+
+.value=event.secondary_color || '#D4AF37';
+
+document.getElementById('selected-id')
+
+.textContent=
+
+'Evento seleccionado: '+event.slug;
+
+window.scrollTo({
+
+top:document.getElementById('edit-card').offsetTop,
+
+behavior:'smooth'
+
+});
+
+}
+
+createButton.addEventListener(
+
+'click',
+
+async()=>{
+
+const name=nameInput.value.trim();
+
+const date=dateInput.value;
+
+if(!name || !date){
+
+createStatus.textContent=
+
+'Escribe el nombre y la fecha del evento.';
+
+createStatus.className='status error';
+
+return;
+
+}
+
+createButton.disabled=true;
+
+createButton.textContent='Creando...';
+
+const baseSlug=
+
+createSlug(name)+'-'+date;
+
+let slug=baseSlug;
+
+let counter=2;
+
+while(true){
+
+const {data}=await db
+
+.from('events')
+
+.select('id')
+
+.eq('slug',slug)
+
+.maybeSingle();
+
+if(!data)break;
+
+slug=baseSlug+'-'+counter;
+
+counter++;
+
+}
+
+const {error}=await db
+
+.from('events')
+
+.insert({
+
+name:name,
+
+event_date:date,
+
+slug:slug,
+
+event_type:typeInput.value,
+
+primary_color:primaryInput.value,
+
+secondary_color:secondaryInput.value,
+
+welcome_message:
+
+welcomeInput.value.trim() ||
+
+'Una noche para recordar'
+
+});
+
+if(error){
+
+createStatus.textContent=
+
+'No se pudo crear el evento.';
+
+createStatus.className='status error';
+
+console.error(error);
+
+}else{
+
+createStatus.textContent=
+
+'Evento creado correctamente.';
+
+createStatus.className='status success';
+
+nameInput.value='';
+
+dateInput.value='';
+
+welcomeInput.value='';
+
+primaryInput.value='#2b2723';
+
+secondaryInput.value='#D4AF37';
+
+await loadEvents();
+
+}
+
+createButton.disabled=false;
+
+createButton.textContent='Crear evento';
+
+});
+
+document.getElementById('save-edit')
+
+.addEventListener('click',async()=>{
+
+if(!selectedEventId)return;
 
 const {error}=await db
 
@@ -276,19 +710,31 @@ const {error}=await db
 
 .update({
 
-name:nameInput.value,
+name:document.getElementById('edit-name').value.trim(),
 
-event_date:dateInput.value,
+event_type:document.getElementById('edit-type').value,
 
-welcome_message:welcomeInput.value,
+event_date:document.getElementById('edit-date').value,
 
-primary_color:primaryInput.value,
+welcome_message:
 
-secondary_color:secondaryInput.value
+document.getElementById('edit-welcome').value.trim(),
+
+primary_color:
+
+document.getElementById('edit-primary').value,
+
+secondary_color:
+
+document.getElementById('edit-secondary').value
 
 })
 
-.eq('slug',EVENT_SLUG);
+.eq('id',selectedEventId);
+
+const status=
+
+document.getElementById('edit-status');
 
 if(error){
 
@@ -308,15 +754,13 @@ status.textContent=
 
 status.className='status success';
 
+await loadEvents();
+
 }
-
-saveButton.disabled=false;
-
-saveButton.textContent='Guardar cambios';
 
 });
 
-loadEvent();
+loadEvents();
 
 </script>
 
