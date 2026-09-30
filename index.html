@@ -1,17 +1,91 @@
 <!doctype html>
+
 <html lang="es">
+
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+
+<meta charset="utf-8">
+
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
 <title>XV Años · Comparte tus recuerdos</title>
+
 <style>
-*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#faf7f2;color:#2b2723}.hero{padding:42px 20px 34px;text-align:center;background:linear-gradient(135deg,#fff,#f2e8dc)}.eyebrow{font-size:13px;letter-spacing:2px;text-transform:uppercase}.hero h1{font-family:Georgia,serif;font-weight:500;font-size:38px;margin:10px 0}.date{font-size:16px}.wrap{max-width:720px;margin:auto;padding:22px 16px}.card{background:#fff;border-radius:20px;padding:22px;margin:14px 0;box-shadow:0 5px 24px #0000000b}.card h2{font-size:21px;margin-top:0}.upload{display:block;width:100%;padding:16px;border:0;border-radius:14px;background:#2b2723;color:#fff;font-size:17px;font-weight:600}.upload:active{transform:scale(.99)}input[type=file]{display:none}.hint{font-size:13px;color:#756d65;margin:12px 0 0}.status{margin-top:14px;font-size:14px}.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.gallery img,.gallery video{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:#eee}.empty{padding:30px;text-align:center;color:#877e75;border:1px dashed #d8cfc5;border-radius:15px}.foot{text-align:center;font-size:12px;color:#9a9188;padding:30px}
+
+*{box-sizing:border-box}
+
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#faf7f2;color:#2b2723}
+
+.hero{padding:42px 20px 34px;text-align:center;background:linear-gradient(135deg,#fff,#f2e8dc)}
+
+.eyebrow{font-size:13px;letter-spacing:2px;text-transform:uppercase}
+
+.hero h1{font-family:Georgia,serif;font-weight:500;font-size:38px;margin:10px 0}
+
+.date{font-size:16px}
+
+.wrap{max-width:720px;margin:auto;padding:22px 16px}
+
+.card{background:#fff;border-radius:20px;padding:22px;margin:14px 0;box-shadow:0 5px 24px #0000000b}
+
+.card h2{font-size:21px;margin-top:0}
+
+.upload{display:block;width:100%;padding:16px;border:0;border-radius:14px;background:#2b2723;color:#fff;font-size:17px;font-weight:600;text-align:center;cursor:pointer}
+
+.upload:active{transform:scale(.99)}
+
+input[type=file]{display:none}
+
+.hint{font-size:13px;color:#756d65;margin:12px 0 0}
+
+.status{margin-top:14px;font-size:14px}
+
+.progress{height:8px;background:#eee;border-radius:20px;overflow:hidden;margin-top:12px;display:none}
+
+.progress>div{height:100%;width:0;background:#2b2723;transition:width .2s}
+
+.gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+
+.gallery img,.gallery video{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:#eee}
+
+.empty{padding:30px;text-align:center;color:#877e75;border:1px dashed #d8cfc5;border-radius:15px}
+
+.media-wrap{position:relative}
+
+.media-label{position:absolute;left:8px;bottom:8px;background:#0009;color:#fff;border-radius:8px;padding:3px 7px;font-size:11px}
+
+.foot{text-align:center;font-size:12px;color:#9a9188;padding:30px}
+
+.error{color:#a33}
+
+.success{color:#3b6b45}
+
 </style>
+
 </head>
+
 <body>
-<section class="hero"><div class="eyebrow">Una noche para recordar</div><h1>XV Años</h1><div class="date">13 de marzo de 2027</div></section>
+
+<section class="hero">
+
+<div class="eyebrow">Una noche para recordar</div>
+
+<h1>XV Años</h1>
+
+<div class="date">13 de marzo de 2027</div>
+
+</section>
+
 <main class="wrap">
-<div class="card"><h2>📸 Comparte tus recuerdos</h2><p>Selecciona las fotos o videos que quieras compartir con la familia y amigos.</p><label class="upload">Seleccionar fotos o videos<input id="picker" type="file" accept="image/*,video/*" multiple></label><div class="status" id="status">Aún no has seleccionado archivos.</div><p class="hint">En la siguiente etapa conectaremos este botón con el almacenamiento real del evento.</p></div>
-<div class="card"><h2>🖼️ Galería</h2><div id="gallery" class="empty">Aquí aparecerán las fotos y videos compartidos.</div></div>
-</main><div class="foot">Evento privado · Comparte tus mejores recuerdos</div>
-<script>const picker=document.getElementById('picker'),status=document.getElementById('status');picker.addEventListener('change',()=>{const n=picker.files.length;status.textContent=n?`${n} archivo${n===1?'':'s'} seleccionado${n===1?'':'s'}.`:'Aún no has seleccionado archivos.';});</script>
-</body></html>
+
+<div class="card">
+
+<h2>📸 Comparte tus recuerdos</h2>
+
+<p>Selecciona las fotos o videos que quieras compartir con la familia y amigos.</p>
+
+<label class="upload">
+
+Seleccionar fotos o videos
+
+<input id="picker" type="file" accept=
