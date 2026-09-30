@@ -134,7 +134,11 @@ const SUPABASE_KEY='sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
 
 const BUCKET='event-media';
 
-const EVENT_SLUG='xv-13-marzo-2027';
+const EVENT_SLUG =
+
+new URLSearchParams(window.location.search).get('evento')
+
+|| 'xv-13-marzo-2027';
 
 const {createClient}=window.supabase;
 
