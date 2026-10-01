@@ -71,7 +71,32 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background
   border-radius:2px;
 
 }
-  
+
+.cover-photo{
+
+  max-width:720px;
+
+  margin:0 auto;
+
+  padding:0 16px 8px;
+
+}
+
+.cover-photo img{
+
+  display:block;
+
+  width:100%;
+
+  height:360px;
+
+  object-fit:cover;
+
+  object-position:center;
+
+  border-radius:0 0 24px 24px;
+
+}
 
 .wrap{max-width:720px;margin:auto;padding:22px 16px}
 
@@ -132,6 +157,12 @@ input[type=file]{display:none}
 <div class="date">13 de marzo de 2027</div>
 
 </section>
+
+<div class="cover-photo" id="cover-photo" style="display:none;">
+
+  <img id="cover-image" alt="Foto del festejado">
+
+</div>
 
 <main class="wrap">
 
@@ -268,7 +299,30 @@ document.querySelector('.hero h1').textContent =
 document.querySelector('.celebrant').textContent =
 
   data.celebrant_names || '';
+  
+if(data.cover_image){
 
+  const {data:coverData,error:coverError}=await db
+
+    .storage
+
+    .from(BUCKET)
+
+    .createSignedUrl(data.cover_image,3600);
+
+  if(!coverError && coverData?.signedUrl){
+
+    document.getElementById('cover-image').src =
+
+      coverData.signedUrl;
+
+    document.getElementById('cover-photo').style.display =
+
+      'block';
+
+  }
+
+}
 document.querySelector('.date').textContent =
 
   new Date(data.event_date+'T00:00:00')
