@@ -700,6 +700,20 @@ downloadQr.style.padding = '10px 16px';
 
 downloadQr.style.cursor = 'pointer';
 
+const downloadCard = document.createElement('button');
+
+downloadCard.type = 'button';
+
+downloadCard.textContent = 'Descargar tarjeta para imprimir';
+
+downloadCard.style.display = 'block';
+
+downloadCard.style.margin = '10px auto 0';
+
+downloadCard.style.padding = '10px 16px';
+
+downloadCard.style.cursor = 'pointer';
+
 qrContainer.appendChild(qrTitle);
 
 qrContainer.appendChild(qrCode);
@@ -707,7 +721,8 @@ qrContainer.appendChild(qrCode);
 qrContainer.appendChild(eventLink);
 
 qrContainer.appendChild(downloadQr);
-  
+
+qrContainer.appendChild(downloadCard);
 
 box.appendChild(qrContainer);
 
@@ -748,6 +763,110 @@ downloadQr.addEventListener('click',()=>{
   link.click();
 
   link.remove();
+
+});
+
+downloadCard.addEventListener('click',()=>{
+
+  const canvas = document.createElement('canvas');
+
+  canvas.width = 1200;
+
+  canvas.height = 1800;
+
+  const ctx = canvas.getContext('2d');
+
+  // Fondo
+
+  ctx.fillStyle = '#ffffff';
+
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  // Color principal del evento
+
+  ctx.fillStyle = event.primary_color || '#2b2723';
+
+  ctx.fillRect(0,0,canvas.width,220);
+
+  // Nombre del evento
+
+  ctx.fillStyle = '#ffffff';
+
+  ctx.textAlign = 'center';
+
+  ctx.font = 'bold 58px Arial';
+
+  ctx.fillText(event.name,600,125);
+
+  // Fecha
+
+  const formattedDate =
+
+    new Date(event.event_date+'T00:00:00')
+
+      .toLocaleDateString('es-MX',{
+
+        day:'numeric',
+
+        month:'long',
+
+        year:'numeric'
+
+      });
+
+  ctx.fillStyle = '#333333';
+
+  ctx.font = '38px Arial';
+
+  ctx.fillText(formattedDate,600,330);
+
+  // Mensaje
+
+  ctx.fillStyle = '#222222';
+
+  ctx.font = 'bold 46px Arial';
+
+  ctx.fillText('Comparte tus mejores momentos',600,450);
+
+  ctx.font = '32px Arial';
+
+  ctx.fillText('Escanea para subir tus fotos y videos',600,510);
+
+  // Obtener QR
+
+  const qrCanvas = qrCode.querySelector('canvas');
+
+  const qrImage = qrCode.querySelector('img');
+
+  const drawAndDownload = (source)=>{
+
+    ctx.drawImage(source,300,620,600,600);
+
+    ctx.fillStyle = '#555555';
+
+    ctx.font = '28px Arial';
+
+    ctx.fillText('Escanea el código QR',600,1320);
+
+    const link = document.createElement('a');
+
+    link.download = `Tarjeta-${event.slug}.png`;
+
+    link.href = canvas.toDataURL('image/png');
+
+    link.click();
+
+  };
+
+  if(qrCanvas){
+
+    drawAndDownload(qrCanvas);
+
+  }else if(qrImage){
+
+    drawAndDownload(qrImage);
+
+  }
 
 });
 
