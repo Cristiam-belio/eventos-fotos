@@ -772,7 +772,7 @@ downloadCard.addEventListener('click',()=>{
 
   canvas.width = 1200;
 
-  canvas.height = 1800;
+  canvas.height = 1600;
 
   const ctx = canvas.getContext('2d');
 
@@ -784,29 +784,21 @@ downloadCard.addEventListener('click',()=>{
 
   ctx.fillStyle = '#FAF8F5';
 
-  ctx.fillRect(0,0,1200,1800);
+  ctx.fillRect(0,0,1200,1600);
 
-  // Marco exterior
+  // Marcos
 
   ctx.strokeStyle = primary;
 
-  ctx.lineWidth = 10;
+  ctx.lineWidth = 9;
 
-  ctx.strokeRect(45,45,1110,1710);
-
-  // Marco interior decorativo
+  ctx.strokeRect(45,45,1110,1510);
 
   ctx.strokeStyle = secondary;
 
   ctx.lineWidth = 3;
 
-  ctx.strokeRect(70,70,1060,1660);
-
-  // Encabezado
-
-  ctx.fillStyle = primary;
-
-  ctx.fillRect(70,70,1060,300);
+  ctx.strokeRect(70,70,1060,1460);
 
   ctx.textAlign = 'center';
 
@@ -814,7 +806,7 @@ downloadCard.addEventListener('click',()=>{
 
   ctx.fillStyle = secondary;
 
-  ctx.font = 'bold 30px Arial';
+  ctx.font = 'bold 29px Arial';
 
   ctx.fillText(
 
@@ -826,13 +818,27 @@ downloadCard.addEventListener('click',()=>{
 
   );
 
-  // Nombre
+  // Nombre del evento
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = primary;
 
-  ctx.font = 'bold 58px Arial';
+  ctx.font = 'bold 62px Arial';
 
   ctx.fillText(event.name,600,235);
+
+  // Detalle decorativo
+
+  ctx.strokeStyle = secondary;
+
+  ctx.lineWidth = 3;
+
+  ctx.beginPath();
+
+  ctx.moveTo(420,285);
+
+  ctx.lineTo(780,285);
+
+  ctx.stroke();
 
   // Fecha
 
@@ -850,17 +856,17 @@ downloadCard.addEventListener('click',()=>{
 
       });
 
+  ctx.fillStyle = '#555555';
+
   ctx.font = '30px Arial';
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillText(formattedDate,600,345);
 
-  ctx.fillText(formattedDate,600,305);
-
-  // Mensaje principal
+  // Invitación
 
   ctx.fillStyle = primary;
 
-  ctx.font = 'bold 45px Arial';
+  ctx.font = 'bold 43px Arial';
 
   ctx.fillText(
 
@@ -868,37 +874,35 @@ downloadCard.addEventListener('click',()=>{
 
     600,
 
-    465
+    440
 
   );
 
-  ctx.fillStyle = '#555555';
+  ctx.fillStyle = '#666666';
 
-  ctx.font = '30px Arial';
+  ctx.font = '28px Arial';
 
   ctx.fillText(
 
-    'Escanea el código para subir tus fotos y videos',
+    'Escanea para subir tus fotos y videos',
 
     600,
 
-    520
+    495
 
   );
 
-  // Fondo blanco para QR
+  // Área del QR
 
   ctx.fillStyle = '#ffffff';
 
-  ctx.fillRect(250,590,700,700);
+  ctx.fillRect(260,555,680,680);
 
   ctx.strokeStyle = secondary;
 
-  ctx.lineWidth = 6;
+  ctx.lineWidth = 5;
 
-  ctx.strokeRect(250,590,700,700);
-
-  // QR existente
+  ctx.strokeRect(260,555,680,680);
 
   const qrCanvas = qrCode.querySelector('canvas');
 
@@ -906,13 +910,13 @@ downloadCard.addEventListener('click',()=>{
 
   const finishCard = (source)=>{
 
-    ctx.drawImage(source,310,650,580,580);
+    // QR con margen blanco para facilitar lectura
 
-    // Texto inferior
+    ctx.drawImage(source,320,615,560,560);
 
     ctx.fillStyle = primary;
 
-    ctx.font = 'bold 34px Arial';
+    ctx.font = 'bold 31px Arial';
 
     ctx.fillText(
 
@@ -920,25 +924,25 @@ downloadCard.addEventListener('click',()=>{
 
       600,
 
-      1400
+      1320
 
     );
 
     ctx.fillStyle = '#666666';
 
-    ctx.font = '27px Arial';
+    ctx.font = '26px Arial';
 
     ctx.fillText(
 
-      'Escanea • Comparte • Disfruta',
+      'Escanea  •  Comparte  •  Disfruta',
 
       600,
 
-      1460
+      1370
 
     );
 
-    // Detalle decorativo
+    // Separador inferior
 
     ctx.strokeStyle = secondary;
 
@@ -946,27 +950,29 @@ downloadCard.addEventListener('click',()=>{
 
     ctx.beginPath();
 
-    ctx.moveTo(330,1530);
+    ctx.moveTo(390,1430);
 
-    ctx.lineTo(870,1530);
+    ctx.lineTo(810,1430);
 
     ctx.stroke();
 
-    ctx.fillStyle = '#777777';
+    // Espacio preparado para nuestra futura marca
 
-    ctx.font = '24px Arial';
+    ctx.fillStyle = '#888888';
+
+    ctx.font = '22px Arial';
 
     ctx.fillText(
 
-      'Fotos y videos del evento',
+      'Fotos y videos compartidos del evento',
 
       600,
 
-      1590
+      1490
 
     );
 
-    // Descargar PNG
+    // Descargar
 
     const link = document.createElement('a');
 
