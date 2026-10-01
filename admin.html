@@ -354,6 +354,18 @@ placeholder="Una noche para recordar">
 
 <button id="create">
 
+<label for="edit-cover">Foto de portada</label>
+
+<input
+
+  id="edit-cover"
+
+  type="file"
+
+  accept="image/*"
+
+>
+
 Crear evento
 
 </button>
@@ -1194,9 +1206,13 @@ previewCard.addEventListener('click',()=>{
 
 }
 
+let selectedEventCover = null;
+  
 function editEvent(event){
 
 selectedEventId=event.id;
+
+selectedEventCover=event.cover_image || null;
 
 document.getElementById('edit-card')
 
@@ -1375,6 +1391,43 @@ document.getElementById('save-edit')
 
 if(!selectedEventId)return;
 
+
+const coverFile =
+
+  document.getElementById('edit-cover').files[0];
+
+let coverPath = null;
+
+if(coverFile){
+
+  const extension =
+
+    coverFile.name.split('.').pop();
+
+  coverPath =
+
+    `covers/${selectedEventId}-${Date.now()}.${extension}`;
+
+  const {error:uploadError}=await db
+
+    .storage
+
+    .from('event-media')
+
+    .upload(coverPath,coverFile);
+
+  if(uploadError){
+
+    console.error(uploadError);
+
+    alert('No se pudo subir la foto de portada.');
+
+    return;
+
+  }
+
+}
+
 const {error}=await db
 
 .from('events')
@@ -1398,7 +1451,9 @@ document.getElementById('edit-primary').value,
 
 secondary_color:
 
-document.getElementById('edit-secondary').value
+document.getElementById('edit-secondary').value,
+
+cover_image: coverPath || selectedEventCover
 
 })
 
