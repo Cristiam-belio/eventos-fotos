@@ -282,6 +282,20 @@ margin:25px 0;
 
 <label>Nombre del evento</label>
 
+<label for="celebrant_names">Nombre(s) de los festejados</label>
+
+<input
+
+  id="celebrant_names"
+
+  type="text"
+
+  placeholder="Ej. Karen y Roberto"
+
+  required
+
+>
+
 <input
 
 id="name"
@@ -363,6 +377,18 @@ Cargando eventos...
 <h2>Editar evento</h2>
 
 <label>Nombre del evento</label>
+
+<label for="edit-celebrant-names">Nombre(s) de los festejados</label>
+
+<input
+
+  id="edit-celebrant-names"
+
+  type="text"
+
+  placeholder="Ej. Karen y Roberto"
+
+>
 
 <input id="edit-name" type="text">
 
@@ -806,7 +832,7 @@ downloadCard.addEventListener('click',()=>{
 
   ctx.fillStyle = secondary;
 
-  ctx.font = 'bold 29px Arial';
+  ctx.font = 'bold 48px Georgia';
 
   ctx.fillText(
 
@@ -818,13 +844,17 @@ downloadCard.addEventListener('click',()=>{
 
   );
 
-  // Nombre del evento
+// Nombres de los festejados
 
-  ctx.fillStyle = primary;
+ctx.fillStyle = primary;
 
-  ctx.font = 'bold 62px Arial';
+ctx.font = 'italic 72px Georgia';
 
-  ctx.fillText(event.name,600,235);
+const displayName =
+
+  event.celebrant_names || event.name;
+
+ctx.fillText(displayName,600,245);
 
   // Detalle decorativo
 
@@ -1012,6 +1042,10 @@ document.getElementById('edit-name')
 
 .value=event.name || '';
 
+document.getElementById('edit-celebrant-names')
+
+  .value=event.celebrant_names || '';
+
 document.getElementById('edit-type')
 
 .value=event.event_type || 'Otro';
@@ -1055,6 +1089,10 @@ createButton.addEventListener(
 async()=>{
 
 const name=nameInput.value.trim();
+
+const celebrantNames=
+
+document.getElementById('celebrant_names').value.trim();
 
 const date=dateInput.value;
 
@@ -1109,6 +1147,7 @@ const {error}=await db
 .insert({
 
 name:name,
+celebrant_names:celebrantNames,
 
 event_date:date,
 
@@ -1180,6 +1219,7 @@ const {error}=await db
 
 name:document.getElementById('edit-name').value.trim(),
 
+celebrant_names:document.getElementById('edit-celebrant-names').value.trim(),
 event_type:document.getElementById('edit-type').value,
 
 event_date:document.getElementById('edit-date').value,
