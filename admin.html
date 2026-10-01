@@ -1290,11 +1290,53 @@ previewCard.addEventListener('click',()=>{
 
 let selectedEventCover = null;
   
-function editEvent(event){
+async function editEvent(event){
 
 selectedEventId=event.id;
 
 selectedEventCover=event.cover_image || null;
+
+  const coverPreview =
+
+  document.getElementById('edit-cover-preview');
+
+const coverPreviewImg =
+
+  document.getElementById('edit-cover-preview-img');
+
+if(selectedEventCover){
+
+  const {data:coverData,error:coverError}=await db
+
+    .storage
+
+    .from(BUCKET)
+
+    .createSignedUrl(selectedEventCover,3600);
+
+  if(!coverError && coverData?.signedUrl){
+
+    coverPreviewImg.src=coverData.signedUrl;
+
+    coverPreviewImg.style.objectPosition=
+
+      `${event.cover_position_x ?? 50}% ${event.cover_position_y ?? 50}%`;
+
+    coverPreviewImg.style.transform=
+
+      `scale(${event.cover_zoom ?? 1})`;
+
+    coverPreview.style.display='block';
+
+  }
+
+}else{
+
+  coverPreview.style.display='none';
+
+  coverPreviewImg.removeAttribute('src');
+
+}
 
   document.getElementById('edit-cover-x').value =
 
@@ -1356,6 +1398,72 @@ behavior:'smooth'
 
 }
 
+const coverX = document.getElementById('edit-cover-x');
+
+const coverY = document.getElementById('edit-cover-y');
+
+const coverZoom = document.getElementById('edit-cover-zoom');
+
+const coverPreviewImg = document.getElementById('edit-cover-preview-img');
+
+const resetCover = document.getElementById('reset-cover-position');
+
+function updateCoverPreview(){
+
+  coverPreviewImg.style.objectPosition =
+
+    `${coverX.value}% ${coverY.value}%`;
+
+  coverPreviewImg.style.transform =
+
+    `scale(${coverZoom.value})`;
+
+}
+
+coverX.addEventListener('input',updateCoverPreview);
+
+coverY.addEventListener('input',updateCoverPreview);
+
+coverZoom.addEventListener('input',updateCoverPreview);
+
+resetCover.addEventListener('click',()=>{
+
+  coverX.value=50;
+
+  coverY.value=50;
+
+  coverZoom.value=1;
+
+  updateCoverPreview();
+
+});
+
+const editCoverInput = document.getElementById('edit-cover');
+
+const coverPreview = document.getElementById('edit-cover-preview');
+
+editCoverInput.addEventListener('change',()=>{
+
+  const file = editCoverInput.files[0];
+
+  if(!file) return;
+
+  const previewUrl = URL.createObjectURL(file);
+
+  coverPreviewImg.src = previewUrl;
+
+  coverPreview.style.display = 'block';
+
+  coverX.value = 50;
+
+  coverY.value = 50;
+
+  coverZoom.value = 1;
+
+  updateCoverPreview();
+
+});
+  
 createButton.addEventListener(
 
 'click',
@@ -1547,7 +1655,13 @@ secondary_color:
 
 document.getElementById('edit-secondary').value,
 
-cover_image: coverPath || selectedEventCover
+cover_image: coverPath || selectedEventCover,
+
+cover_position_x: Number(document.getElementById('edit-cover-x').value),
+
+cover_position_y: Number(document.getElementById('edit-cover-y').value),
+
+cover_zoom: Number(document.getElementById('edit-cover-zoom').value)
 
 })
 
