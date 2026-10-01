@@ -23,6 +23,19 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background
 .hero h1{font-family:Georgia,serif;font-weight:500;font-size:38px;margin:10px 0}
 
 .date{font-size:16px}
+.celebrant{
+
+  font-family:'Great Vibes',cursive;
+
+  font-size:52px;
+
+  line-height:1.1;
+
+  margin:12px 0 8px;
+
+  color:var(--primary-color,#2b2723);
+
+}
 
 .wrap{max-width:720px;margin:auto;padding:22px 16px}
 
@@ -62,6 +75,12 @@ input[type=file]{display:none}
 
 </style>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -71,6 +90,8 @@ input[type=file]{display:none}
 <div class="eyebrow">Una noche para recordar</div>
 
 <h1>XV Años</h1>
+
+<div class="celebrant"></div>
 
 <div class="date">13 de marzo de 2027</div>
 
@@ -207,6 +228,10 @@ document.querySelector('.eyebrow').textContent =
 document.querySelector('.hero h1').textContent =
 
   data.name;
+  
+document.querySelector('.celebrant').textContent =
+
+  data.celebrant_names || '';
 
 document.querySelector('.date').textContent =
 
