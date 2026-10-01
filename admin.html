@@ -799,7 +799,7 @@ downloadQr.addEventListener('click',()=>{
 
 downloadCard.addEventListener('click',async()=>{
 
-  await document.fonts.load('82px "Great Vibes"');
+  await document.fonts.load('100px "Great Vibes"');
 
   const canvas = document.createElement('canvas');
 
@@ -855,11 +855,29 @@ downloadCard.addEventListener('click',async()=>{
 
 ctx.fillStyle = primary;
 
-ctx.font = '82px "Great Vibes", cursive';
-
 const displayName =
 
   event.celebrant_names || event.name;
+
+// Tamaño automático para aprovechar el ancho disponible
+
+let nameFontSize = 100;
+
+const maxNameWidth = 900;
+
+do {
+
+  ctx.font = `${nameFontSize}px "Great Vibes", cursive`;
+
+  nameFontSize -= 2;
+
+} while (
+
+  ctx.measureText(displayName).width > maxNameWidth &&
+
+  nameFontSize > 50
+
+);
 
 ctx.fillText(displayName,600,245);
 
