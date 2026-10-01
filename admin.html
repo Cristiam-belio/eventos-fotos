@@ -736,6 +736,8 @@ const downloadCard = document.createElement('button');
 downloadCard.type = 'button';
 
 downloadCard.textContent = 'Descargar tarjeta para imprimir';
+const previewCard = document.createElement('button');
+previewCard.textContent = 'Vista previa de tarjeta';
 
 downloadCard.style.display = 'block';
 
@@ -744,6 +746,14 @@ downloadCard.style.margin = '10px auto 0';
 downloadCard.style.padding = '10px 16px';
 
 downloadCard.style.cursor = 'pointer';
+
+previewCard.style.display = 'block';
+
+previewCard.style.margin = '10px auto 0';
+
+previewCard.style.padding = '10px 16px';
+
+previewCard.style.cursor = 'pointer';
 
 qrContainer.appendChild(qrTitle);
 
@@ -754,6 +764,8 @@ qrContainer.appendChild(eventLink);
 qrContainer.appendChild(downloadQr);
 
 qrContainer.appendChild(downloadCard);
+
+qrContainer.appendChild(previewCard);
 
 box.appendChild(qrContainer);
 
@@ -797,7 +809,7 @@ downloadQr.addEventListener('click',()=>{
 
 });
 
-downloadCard.addEventListener('click',async()=>{
+const generateCard = async (mode = 'download')=>{
 
   await document.fonts.load('100px "Great Vibes"');
 
@@ -1087,13 +1099,73 @@ ctx.fillText(displayName,600,245);
 
     // Descargar
 
-    const link = document.createElement('a');
+    const imageUrl = canvas.toDataURL('image/png');
 
-    link.download = `Tarjeta-${event.slug}.png`;
+if(mode === 'preview'){
 
-    link.href = canvas.toDataURL('image/png');
+  const overlay = document.createElement('div');
 
-    link.click();
+  overlay.style.position = 'fixed';
+
+  overlay.style.inset = '0';
+
+  overlay.style.background = 'rgba(0,0,0,0.85)';
+
+  overlay.style.zIndex = '9999';
+
+  overlay.style.display = 'flex';
+
+  overlay.style.flexDirection = 'column';
+
+  overlay.style.alignItems = 'center';
+
+  overlay.style.justifyContent = 'center';
+
+  overlay.style.padding = '20px';
+
+  const previewImage = document.createElement('img');
+
+  previewImage.src = imageUrl;
+
+  previewImage.style.maxWidth = '90%';
+
+  previewImage.style.maxHeight = '80vh';
+
+  previewImage.style.objectFit = 'contain';
+
+  const closeButton = document.createElement('button');
+
+  closeButton.textContent = 'Cerrar vista previa';
+
+  closeButton.style.marginTop = '15px';
+
+  closeButton.style.padding = '12px 20px';
+
+  closeButton.style.cursor = 'pointer';
+
+  closeButton.addEventListener('click',()=>{
+
+    overlay.remove();
+
+  });
+
+  overlay.appendChild(previewImage);
+
+  overlay.appendChild(closeButton);
+
+  document.body.appendChild(overlay);
+
+  return;
+
+}
+
+const link = document.createElement('a');
+
+link.download = `Tarjeta-${event.slug}.png`;
+
+link.href = imageUrl;
+
+link.click();
 
   };
 
@@ -1107,7 +1179,16 @@ ctx.fillText(displayName,600,245);
 
   }
 
+};
+downloadCard.addEventListener('click',()=>{
+  generateCard('download');
 });
+
+previewCard.addEventListener('click',()=>{
+  generateCard('preview');
+});
+
+  
 
 }
 
