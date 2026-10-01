@@ -98,6 +98,8 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background
 
   box-shadow:0 10px 28px rgba(0,0,0,0.10);
 
+  clip-path: inset(0 round 24px);
+
 }
 
 .wrap{max-width:720px;margin:auto;padding:22px 16px}
@@ -318,6 +320,21 @@ if(data.cover_image){
 
       coverData.signedUrl;
 
+
+const coverImage =
+
+  document.getElementById('cover-image');
+
+coverImage.style.objectPosition =
+
+  `${data.cover_position_x ?? 50}% ${data.cover_position_y ?? 50}%`;
+
+coverImage.style.transform =
+
+  `scale(${data.cover_zoom ?? 1})`;
+
+
+    
     document.getElementById('cover-photo').style.display =
 
       'block';
