@@ -214,6 +214,10 @@ margin:25px 0;
 
 </style>
 
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Great+Vibes&display=swap" rel="stylesheet">
+  
 </head>
 
 <body>
@@ -793,7 +797,9 @@ downloadQr.addEventListener('click',()=>{
 
 });
 
-downloadCard.addEventListener('click',()=>{
+downloadCard.addEventListener('click',async()=>{
+
+  await document.fonts.load('72px "Great Vibes"');
 
   const canvas = document.createElement('canvas');
 
@@ -849,7 +855,7 @@ downloadCard.addEventListener('click',()=>{
 
 ctx.fillStyle = primary;
 
-ctx.font = 'italic 72px Georgia';
+ctx.font = '72px "Great Vibes", cursive';
 
 const displayName =
 
