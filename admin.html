@@ -438,7 +438,89 @@ Cargando eventos...
   accept="image/*"
 
 >
+
+<div
+
+  id="edit-cover-preview"
+
+  style="
+
+    width:100%;
+
+    height:260px;
+
+    margin:14px 0;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    background:#eee;
+
+    display:none;
+
+  "
+
+>
+
+  <img
+
+    id="edit-cover-preview-img"
+
+    alt="Vista previa de portada"
+
+    style="
+
+      width:100%;
+
+      height:100%;
+
+      object-fit:cover;
+
+      object-position:50% 50%;
+
+      transform:scale(1);
+
+    "
+
+  >
+
+</div>
   
+<div id="cover-adjustments">
+
+  <label>
+
+    Posición horizontal
+
+    <input id="edit-cover-x" type="range" min="0" max="100" value="50">
+
+  </label>
+
+  <label>
+
+    Posición vertical
+
+    <input id="edit-cover-y" type="range" min="0" max="100" value="50">
+
+  </label>
+
+  <label>
+
+    Tamaño de la foto
+
+    <input id="edit-cover-zoom" type="range" min="1" max="2" step="0.05" value="1">
+
+  </label>
+
+  <button type="button" id="reset-cover-position">
+
+    Restablecer encuadre
+
+  </button>
+
+</div>
+
 <label>Color principal</label>
 
 <input id="edit-primary" type="color">
@@ -1213,6 +1295,18 @@ function editEvent(event){
 selectedEventId=event.id;
 
 selectedEventCover=event.cover_image || null;
+
+  document.getElementById('edit-cover-x').value =
+
+  event.cover_position_x ?? 50;
+
+document.getElementById('edit-cover-y').value =
+
+  event.cover_position_y ?? 50;
+
+document.getElementById('edit-cover-zoom').value =
+
+  event.cover_zoom ?? 1;
 
 document.getElementById('edit-card')
 
