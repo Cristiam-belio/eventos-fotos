@@ -825,14 +825,49 @@ const readableSecondary = (color)=>{
 
   if(brightness > 210){
 
-    return `rgb(${Math.round(r*0.72)}, ${Math.round(g*0.72)}, ${Math.round(b*0.72)})`;
+    const max = Math.max(r,g,b);
+
+    const min = Math.min(r,g,b);
+
+    // Si el color tiene muy poca saturación, lo oscurecemos normalmente
+
+    if(max - min < 25){
+
+      return `rgb(${Math.round(r*0.65)}, ${Math.round(g*0.65)}, ${Math.round(b*0.65)})`;
+
+    }
+
+    // Si tiene color, aumentamos su saturación antes de oscurecerlo
+
+    const avg = (r + g + b) / 3;
+
+    const saturationBoost = 1.8;
+
+    const newR = Math.max(0,Math.min(255,
+
+      avg + (r-avg)*saturationBoost
+
+    ));
+
+    const newG = Math.max(0,Math.min(255,
+
+      avg + (g-avg)*saturationBoost
+
+    ));
+
+    const newB = Math.max(0,Math.min(255,
+
+      avg + (b-avg)*saturationBoost
+
+    ));
+
+    return `rgb(${Math.round(newR*0.78)}, ${Math.round(newG*0.78)}, ${Math.round(newB*0.78)})`;
 
   }
 
   return color;
 
 };
-
 const secondaryText = readableSecondary(secondary);
   
 
