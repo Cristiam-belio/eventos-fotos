@@ -776,27 +776,63 @@ downloadCard.addEventListener('click',()=>{
 
   const ctx = canvas.getContext('2d');
 
+  const primary = event.primary_color || '#2b2723';
+
+  const secondary = event.secondary_color || '#D4AF37';
+
   // Fondo
 
-  ctx.fillStyle = '#ffffff';
+  ctx.fillStyle = '#FAF8F5';
 
-  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillRect(0,0,1200,1800);
 
-  // Color principal del evento
+  // Marco exterior
 
-  ctx.fillStyle = event.primary_color || '#2b2723';
+  ctx.strokeStyle = primary;
 
-  ctx.fillRect(0,0,canvas.width,220);
+  ctx.lineWidth = 10;
 
-  // Nombre del evento
+  ctx.strokeRect(45,45,1110,1710);
 
-  ctx.fillStyle = '#ffffff';
+  // Marco interior decorativo
+
+  ctx.strokeStyle = secondary;
+
+  ctx.lineWidth = 3;
+
+  ctx.strokeRect(70,70,1060,1660);
+
+  // Encabezado
+
+  ctx.fillStyle = primary;
+
+  ctx.fillRect(70,70,1060,300);
 
   ctx.textAlign = 'center';
 
+  // Tipo de evento
+
+  ctx.fillStyle = secondary;
+
+  ctx.font = 'bold 30px Arial';
+
+  ctx.fillText(
+
+    (event.event_type || 'Evento').toUpperCase(),
+
+    600,
+
+    145
+
+  );
+
+  // Nombre
+
+  ctx.fillStyle = '#ffffff';
+
   ctx.font = 'bold 58px Arial';
 
-  ctx.fillText(event.name,600,125);
+  ctx.fillText(event.name,600,235);
 
   // Fecha
 
@@ -814,39 +850,123 @@ downloadCard.addEventListener('click',()=>{
 
       });
 
-  ctx.fillStyle = '#333333';
+  ctx.font = '30px Arial';
 
-  ctx.font = '38px Arial';
+  ctx.fillStyle = '#ffffff';
 
-  ctx.fillText(formattedDate,600,330);
+  ctx.fillText(formattedDate,600,305);
 
-  // Mensaje
+  // Mensaje principal
 
-  ctx.fillStyle = '#222222';
+  ctx.fillStyle = primary;
 
-  ctx.font = 'bold 46px Arial';
+  ctx.font = 'bold 45px Arial';
 
-  ctx.fillText('Comparte tus mejores momentos',600,450);
+  ctx.fillText(
 
-  ctx.font = '32px Arial';
+    'Comparte tus mejores momentos',
 
-  ctx.fillText('Escanea para subir tus fotos y videos',600,510);
+    600,
 
-  // Obtener QR
+    465
+
+  );
+
+  ctx.fillStyle = '#555555';
+
+  ctx.font = '30px Arial';
+
+  ctx.fillText(
+
+    'Escanea el código para subir tus fotos y videos',
+
+    600,
+
+    520
+
+  );
+
+  // Fondo blanco para QR
+
+  ctx.fillStyle = '#ffffff';
+
+  ctx.fillRect(250,590,700,700);
+
+  ctx.strokeStyle = secondary;
+
+  ctx.lineWidth = 6;
+
+  ctx.strokeRect(250,590,700,700);
+
+  // QR existente
 
   const qrCanvas = qrCode.querySelector('canvas');
 
   const qrImage = qrCode.querySelector('img');
 
-  const drawAndDownload = (source)=>{
+  const finishCard = (source)=>{
 
-    ctx.drawImage(source,300,620,600,600);
+    ctx.drawImage(source,310,650,580,580);
 
-    ctx.fillStyle = '#555555';
+    // Texto inferior
 
-    ctx.font = '28px Arial';
+    ctx.fillStyle = primary;
 
-    ctx.fillText('Escanea el código QR',600,1320);
+    ctx.font = 'bold 34px Arial';
+
+    ctx.fillText(
+
+      '¡Queremos ver el evento desde tus ojos!',
+
+      600,
+
+      1400
+
+    );
+
+    ctx.fillStyle = '#666666';
+
+    ctx.font = '27px Arial';
+
+    ctx.fillText(
+
+      'Escanea • Comparte • Disfruta',
+
+      600,
+
+      1460
+
+    );
+
+    // Detalle decorativo
+
+    ctx.strokeStyle = secondary;
+
+    ctx.lineWidth = 3;
+
+    ctx.beginPath();
+
+    ctx.moveTo(330,1530);
+
+    ctx.lineTo(870,1530);
+
+    ctx.stroke();
+
+    ctx.fillStyle = '#777777';
+
+    ctx.font = '24px Arial';
+
+    ctx.fillText(
+
+      'Fotos y videos del evento',
+
+      600,
+
+      1590
+
+    );
+
+    // Descargar PNG
 
     const link = document.createElement('a');
 
@@ -860,11 +980,11 @@ downloadCard.addEventListener('click',()=>{
 
   if(qrCanvas){
 
-    drawAndDownload(qrCanvas);
+    finishCard(qrCanvas);
 
   }else if(qrImage){
 
-    drawAndDownload(qrImage);
+    finishCard(qrImage);
 
   }
 
