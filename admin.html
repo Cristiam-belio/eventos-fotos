@@ -1371,40 +1371,41 @@ behavior:'smooth'
 
 if(selectedEventCover){
 
-  db.storage
+  const {data:coverData,error:coverError}=await db
+
+    .storage
 
     .from(BUCKET)
 
-    .createSignedUrl(selectedEventCover,3600)
+    .createSignedUrl(selectedEventCover,3600);
 
-    .then(({data:coverData,error:coverError})=>{
+  if(!coverError && coverData?.signedUrl){
 
-      if(!coverError && coverData?.signedUrl){
+    coverPreviewImg.src=coverData.signedUrl;
 
-        coverPreviewImg.src=coverData.signedUrl;
+    coverPreviewImg.style.objectPosition =
 
-        coverPreviewImg.style.objectPosition=
+      `${event.cover_position_x ?? 50}% ${event.cover_position_y ?? 50}%`;
 
-          `${event.cover_position_x ?? 50}% ${event.cover_position_y ?? 50}%`;
+    coverPreviewImg.style.transformOrigin =
 
-        coverPreviewImg.style.transform=
+      `${event.cover_position_x ?? 50}% ${event.cover_position_y ?? 50}%`;
 
-          `scale(${event.cover_zoom ?? 1})`;
+    coverPreviewImg.style.transform =
 
-        coverPreview.style.display='block';
+      `scale(${event.cover_zoom ?? 1})`;
 
-      }
+    coverPreview.style.display='block';
 
-    })
-
-    .catch(error=>{
-
-      console.error('Error al cargar portada:',error);
-
-    });
+  }
 
 }
 
+
+
+
+
+  
 }
 
 const coverX = document.getElementById('edit-cover-x');
