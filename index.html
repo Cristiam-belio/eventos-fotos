@@ -670,7 +670,7 @@ continue;
 
 
   alert("LLEGÓ A SUPABASE");
-const {error:dbError}=
+const {data:insertData,error:dbError}=
 
 await db.from('media').insert([{
 
@@ -685,6 +685,8 @@ media_type:type,
 file_size:file.size
 
 }]);
+alert("RESULTADO: " + JSON.stringify({insertData,dbError}));
+  
 
 alert("TERMINÓ INSERT");
   
