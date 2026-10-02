@@ -672,7 +672,7 @@ continue;
   alert("LLEGÓ A SUPABASE");
 const {error:dbError}=
 
-await db.from('media').insert({
+await db.from('media').insert([{
 
 event_id:eventId,
 
@@ -684,7 +684,7 @@ media_type:type,
 
 file_size:file.size
 
-});
+}]);
 
 alert("TERMINÓ INSERT");
   
