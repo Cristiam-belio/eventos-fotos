@@ -28,15 +28,15 @@ export default async function handler(req, res) {
 
   try {
 
-const { key } = req.body;
+const { key: requestedKey } = req.body;
 
-if (key) {
+if (requestedKey) {
 
   const command = new GetObjectCommand({
 
     Bucket: process.env.R2_BUCKET_NAME,
 
-    Key: key,
+Key: requestedKey,
 
   });
 
