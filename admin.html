@@ -1296,47 +1296,8 @@ selectedEventId=event.id;
 
 selectedEventCover=event.cover_image || null;
 
-  const coverPreview =
 
-  document.getElementById('edit-cover-preview');
 
-const coverPreviewImg =
-
-  document.getElementById('edit-cover-preview-img');
-
-if(selectedEventCover){
-
-  const {data:coverData,error:coverError}=await db
-
-    .storage
-
-    .from(BUCKET)
-
-    .createSignedUrl(selectedEventCover,3600);
-
-  if(!coverError && coverData?.signedUrl){
-
-    coverPreviewImg.src=coverData.signedUrl;
-
-    coverPreviewImg.style.objectPosition=
-
-      `${event.cover_position_x ?? 50}% ${event.cover_position_y ?? 50}%`;
-
-    coverPreviewImg.style.transform=
-
-      `scale(${event.cover_zoom ?? 1})`;
-
-    coverPreview.style.display='block';
-
-  }
-
-}else{
-
-  coverPreview.style.display='none';
-
-  coverPreviewImg.removeAttribute('src');
-
-}
 
   document.getElementById('edit-cover-x').value =
 
