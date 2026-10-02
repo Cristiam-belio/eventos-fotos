@@ -1284,8 +1284,8 @@ previewCard.addEventListener('click',()=>{
   generateCard('preview');
 });
 
-  
 
+  
 }
 
 }
@@ -1297,6 +1297,10 @@ async function editEvent(event){
 selectedEventId=event.id;
 
 selectedEventCover=event.cover_image || null;
+
+alert('Portada: ' + selectedEventCover);
+
+  
 
 const coverPreview =
 
