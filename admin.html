@@ -1298,9 +1298,6 @@ selectedEventId=event.id;
 
 selectedEventCover=event.cover_image || null;
 
-alert('Portada: ' + selectedEventCover);
-
-  
 
 const coverPreview =
 
@@ -1382,6 +1379,9 @@ if(selectedEventCover){
     .from(BUCKET)
 
     .createSignedUrl(selectedEventCover,3600);
+
+alert('URL: ' + coverData?.signedUrl + '\nERROR: ' + (coverError?.message || 'ninguno'));
+  
 
   if(!coverError && coverData?.signedUrl){
 
