@@ -421,13 +421,74 @@ gallery.innerHTML='';
 
 for(const item of data){
 
-const {data:urlData,error:urlError}=await db
+  
 
-.storage
+let urlData = null;
 
-.from(BUCKET)
+let urlError = null;
 
-.createSignedUrl(item.file_path,3600);
+if(item.file_path.startsWith('uploads/')){
+
+  try{
+
+    const response = await fetch('/api/r2-upload',{
+
+      method:'POST',
+
+      headers:{
+
+        'Content-Type':'application/json'
+
+      },
+
+      body:JSON.stringify({
+
+        key:item.file_path
+
+      })
+
+    });
+
+    const result = await response.json();
+
+    if(!response.ok){
+
+      throw new Error(result.error || 'Error al obtener imagen de R2');
+
+    }
+
+    urlData = {
+
+      signedUrl:result.viewUrl
+
+    };
+
+  }catch(error){
+
+    urlError = error;
+
+  }
+
+}else{
+
+  const signed = await db
+
+    .storage
+
+    .from(BUCKET)
+
+    .createSignedUrl(item.file_path,3600);
+
+  urlData = signed.data;
+
+  urlError = signed.error;
+
+}
+
+
+
+
+  
 if(urlError){
   console.error(urlError);
   continue;
