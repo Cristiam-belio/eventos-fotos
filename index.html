@@ -80,6 +80,8 @@ body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background
 
   padding:0 18px;
 
+  overflow:hidden; 
+
 }
 
 .cover-photo img{
@@ -326,6 +328,10 @@ const coverImage =
   document.getElementById('cover-image');
 
 coverImage.style.objectPosition =
+
+  `${data.cover_position_x ?? 50}% ${data.cover_position_y ?? 50}%`;
+
+coverImage.style.transformOrigin =
 
   `${data.cover_position_x ?? 50}% ${data.cover_position_y ?? 50}%`;
 
