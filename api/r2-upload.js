@@ -28,6 +28,36 @@ export default async function handler(req, res) {
 
   try {
 
+const { key } = req.body;
+
+if (key) {
+
+  const command = new GetObjectCommand({
+
+    Bucket: process.env.R2_BUCKET_NAME,
+
+    Key: key,
+
+  });
+
+  const viewUrl = await getSignedUrl(r2, command, {
+
+    expiresIn: 3600,
+
+  });
+
+  return res.status(200).json({
+
+    viewUrl,
+
+  });
+
+}
+
+
+
+
+    
     const { fileName, contentType } = req.body;
 
     if (!fileName || !contentType) {
