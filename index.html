@@ -537,29 +537,63 @@ const path=
 
 `${EVENT_SLUG}/${type}/${Date.now()}-${crypto.randomUUID()}-${safeName(file.name)}`;
 
-const {error:uploadError}=
+let uploadError = null;
 
-await db.storage
+try {
 
-.from(BUCKET)
+  const response = await fetch('/api/r2-upload', {
 
-.upload(
+    method: 'POST',
 
-path,
+    headers: {
 
-file,
+      'Content-Type': 'application/json'
 
-{
+    },
 
-contentType:file.type,
+    body: JSON.stringify({
 
-cacheControl:'3600',
+      fileName: path,
 
-upsert:false
+      fileType: file.type
+
+    })
+
+  });
+
+  const result = await response.json();
+
+  if (!response.ok) {
+
+    throw new Error(result.error || 'Error al obtener URL de subida');
+
+  }
+
+  const uploadResponse = await fetch(result.uploadUrl, {
+
+    method: 'PUT',
+
+    headers: {
+
+      'Content-Type': file.type
+
+    },
+
+    body: file
+
+  });
+
+  if (!uploadResponse.ok) {
+
+    throw new Error('Error al subir archivo a R2');
+
+  }
+
+} catch (error) {
+
+  uploadError = error;
 
 }
-
-);
 
 if(uploadError){
 
