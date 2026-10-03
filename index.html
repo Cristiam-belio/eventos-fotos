@@ -672,7 +672,7 @@ continue;
   alert("LLEGÓ A SUPABASE");
 alert("EVENT ID: " + eventId);
 alert("DB EXISTE: " + (typeof db !== "undefined"));
-
+alert("FROM EXISTE: " + (typeof db.from === "function"));
   
 const {data:insertData,error:dbError}=
 
