@@ -676,33 +676,39 @@ alert("FROM EXISTE: " + (typeof db.from === "function"));
 alert("INSERT EXISTE: " + (typeof db.from('media').insert === "function"));
   
   
-const {data:insertData,error:dbError}=
+const insertRes = await 
 
-db.from('media').insert([{
+fetch(`${SUPABASE_URL}/rest/v1/media`, {
+method: "POST",
+headers: {
+"apikey": SUPABASE_KEY,
 
-event_id:eventId,
+"Content-Type": "aplication/json"
+},
+body:JSON.stringify({
+event_id: eventId,
+  file_name: file.name,
+  file_path: result.key!
+  media_type: type,
+  file_size: file.size
 
-file_name:file.name,
+})
 
-file_path:result.key,
-
-media_type:type,
-
-file_size:file.size
-
-}]);
-alert("RESULTADO: " + JSON.stringify({insertData,dbError}));
+});
   
 
-alert("TERMINÓ INSERT");
   
 
-if(dbError){
-alert("ERROR SUPABASE: " + JSON.stringify(dbError));
+if (!insertRes.ok) {
+
+const insertError = await insertRes.text();
+alert("ERROR SUPABASE REST: " + insertError);
+  
+
 
 failed++;
 
-console.error(dbError);
+console.error(insertError);
 
 continue;
 
