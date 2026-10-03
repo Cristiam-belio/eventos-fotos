@@ -673,6 +673,8 @@ continue;
 alert("EVENT ID: " + eventId);
 alert("DB EXISTE: " + (typeof db !== "undefined"));
 alert("FROM EXISTE: " + (typeof db.from === "function"));
+alert("INSERT EXISTE: " + (typeof db.from('media').insert === "function"));
+  
   
 const {data:insertData,error:dbError}=
 
