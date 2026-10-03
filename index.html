@@ -678,7 +678,7 @@ alert("INSERT EXISTE: " + (typeof db.from('media').insert === "function"));
   
 const {data:insertData,error:dbError}=
 
-await db.from('media').insert([{
+db.from('media').insert([{
 
 event_id:eventId,
 
