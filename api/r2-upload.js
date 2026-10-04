@@ -28,7 +28,28 @@ export default async function handler(req, res) {
 
   try {
 
-const { key: requestedKey } = req.body;
+const { key: requestedKey, keys: requestedKeys } = req.body;
+    if (Array.isArray(requestedKeys) && requestedKeys.length) {
+      const urls = {};
+      for (const key of requestedKeys) {
+        const command = new GetObjectCommand({
+          Bucket: process.env.R2_BUCKET_NAME,
+          Key: key,
+        });
+
+        urls[key] = await getSignedUrl(r2, command, { expiresIn: 3600 });
+
+      }
+
+      return res.status(200).json({ urls });
+    }
+    
+
+
+          
+
+
+        
 
 if (requestedKey) {
 
