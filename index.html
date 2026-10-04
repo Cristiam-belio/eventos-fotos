@@ -421,74 +421,13 @@ gallery.innerHTML='';
 
 for(const item of data){
 
-  
+const {data:urlData,error:urlError}=await db
 
-let urlData = null;
+.storage
 
-let urlError = null;
+.from(BUCKET)
 
-if(item.file_path.startsWith('uploads/')){
-
-  try{
-
-    const response = await fetch('/api/r2-upload',{
-
-      method:'POST',
-
-      headers:{
-
-        'Content-Type':'application/json'
-
-      },
-
-      body:JSON.stringify({
-
-        key:item.file_path
-
-      })
-
-    });
-
-    const result = await response.json();
-
-    if(!response.ok){
-
-      throw new Error(result.error || 'Error al obtener imagen de R2');
-
-    }
-
-    urlData = {
-
-      signedUrl:result.viewUrl
-
-    };
-
-  }catch(error){
-
-    urlError = error;
-
-  }
-
-}else{
-
-  const signed = await db
-
-    .storage
-
-    .from(BUCKET)
-
-    .createSignedUrl(item.file_path,3600);
-
-  urlData = signed.data;
-
-  urlError = signed.error;
-
-}
-
-
-
-
-  
+.createSignedUrl(item.file_path,3600);
 if(urlError){
   console.error(urlError);
   continue;
@@ -598,65 +537,29 @@ const path=
 
 `${EVENT_SLUG}/${type}/${Date.now()}-${crypto.randomUUID()}-${safeName(file.name)}`;
 
-let uploadError = null;
+const {error:uploadError}=
 
-try {
+await db.storage
 
-  const response = await fetch('/api/r2-upload', {
+.from(BUCKET)
 
-    method: 'POST',
+.upload(
 
-    headers: {
+path,
 
-      'Content-Type': 'application/json'
+file,
 
-    },
+{
 
-    body: JSON.stringify({
+contentType:file.type,
 
-      fileName: path,
+cacheControl:'3600',
 
-      contentType: file.type
-
-    })
-
-  });
-
-  const result = await response.json();
-console.log('R2 RESULT:', result);
-  
-
-  if (!response.ok) {
-
-    throw new Error(result.error || 'Error al obtener URL de subida');
-
-  }
-
-  const uploadResponse = await fetch(result.uploadUrl, {
-
-    method: 'PUT',
-
-    headers: {
-
-      'Content-Type': file.type
-
-    },
-
-    body: file
-
-  });
-
-  if (!uploadResponse.ok) {
-
-    throw new Error('Error al subir archivo a R2');
-
-  }
-
-} catch (error) {
-
-  uploadError = error;
+upsert:false
 
 }
+
+);
 
 if(uploadError){
 
@@ -668,47 +571,27 @@ continue;
 
 }
 
+const {error:dbError}=
 
-  alert("LLEGÓ A SUPABASE");
-alert("EVENT ID: " + eventId);
-alert("DB EXISTE: " + (typeof db !== "undefined"));
-alert("FROM EXISTE: " + (typeof db.from === "function"));
-alert("INSERT EXISTE: " + (typeof db.from('media').insert === "function"));
-  
-  
-const insertRes = await 
+await db.from('media').insert({
 
-fetch(`${SUPABASE_URL}/rest/v1/media`, {
-method: "POST",
-headers: {
-"apikey": SUPABASE_KEY,
+event_id:eventId,
 
-"Content-Type": "aplication/json"
-},
-body:JSON.stringify({
-event_id: eventId,
-  file_name: file.name,
-  file_path: result.key!
-  media_type: type,
-  file_size: file.size
+file_name:file.name,
 
-})
+file_path:path,
+
+media_type:type,
+
+file_size:file.size
 
 });
-  
 
-  
-
-if (!insertRes.ok) {
-
-const insertError = await insertRes.text();
-alert("ERROR SUPABASE REST: " + insertError);
-  
-
+if(dbError){
 
 failed++;
 
-console.error(insertError);
+console.error(dbError);
 
 continue;
 
@@ -756,7 +639,7 @@ setStatus(
 
 picker.value='';
 
-loadGallery();
+await loadGallery();
 
 });
 
