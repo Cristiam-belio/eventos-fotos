@@ -421,13 +421,30 @@ gallery.innerHTML='';
 
 for(const item of data){
 
-const {data:urlData,error:urlError}=await db
 
-.storage
 
-.from(BUCKET)
+  
+let urlData=null, urlError=null;
+  try{
+  const response=await fetch('/api/r2-upload',{
+  method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({key:item.file_path})
 
-.createSignedUrl(item.file_path,3600);
+  });
+
+
+  if(!response.ok) throw new Error(await response.text());
+    const r2Data=await response.json();
+urlData={signedUrl:r2Data.viewUrl};
+
+    }catch(error){
+
+  urlError=error;
+
+}
+    
+  
 if(urlError){
   console.error(urlError);
   continue;
