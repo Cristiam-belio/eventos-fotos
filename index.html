@@ -533,34 +533,52 @@ const type=file.type.startsWith('image/')
 
 :'video';
 
-const path=
+let path='';
 
-`${EVENT_SLUG}/${type}/${Date.now()}-${crypto.randomUUID()}-${safeName(file.name)}`;
 
-const {error:uploadError}=
+let uploadError=null;
+  try{
+const response=await fetch('/api/r2-upload',{
 
-await db.storage
+  method:'POST',
 
-.from(BUCKET)
+headers:{'Content-Type':'application/json'},
 
-.upload(
+body:JSON.stringify({
 
-path,
+  fileName:file.name,
 
-file,
+  contentType:file.type
 
-{
+})
 
-contentType:file.type,
+});
+    
+if(!response.ok) throw new Error(await response.text());
+const r2Data=await response.json();
+path=r2Data.key;
 
-cacheControl:'3600',
 
-upsert:false
+
+const putRes=await fetch(r2Data.uploadUrl,{
+method:'PUT',
+headers:{'Content-Type':file.type},
+  body:file
+});
+
+
+if(!putRes.ok) throw new Error(`R2 PUT ${putRes.status}`);
+    }catch(error){
+
+  uploadError=error;
 
 }
+    
+    
+    
+  
 
-);
-
+  
 if(uploadError){
 
 failed++;
