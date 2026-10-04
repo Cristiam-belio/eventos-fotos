@@ -597,15 +597,15 @@ if(!putRes.ok) throw new Error(`R2 PUT ${putRes.status}`);
 
   
 if(uploadError){
-
 failed++;
-
 console.error(uploadError);
-
+  
 continue;
 
 }
 
+
+  
 const {error:dbError}=
 
 await db.from('media').insert({
@@ -622,11 +622,14 @@ file_size:file.size
 
 });
 
+
+  
 if(dbError){
 
 failed++;
 
 console.error(dbError);
+  
 
 continue;
 
@@ -654,7 +657,7 @@ if(failed){
 
 setStatus(
 
-`Listo: ${done} archivo${done===1?'':'s'} subido${done===1?'':'s'}; ${failed} no se pudieron subir.`,
+`Listo: ${done} archivo${done===1?'':'s'} subido${done===1?'':'s'}. ${failed} no se pudieron subir. Revisa tu conexión e inténtalo nuevamente.`
 
 'error'
 
