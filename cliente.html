@@ -149,6 +149,23 @@ const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const eventId='f2e8adf2-c30c-4c47-a279-5cfbf5116194';
 let clientMedia=[];
 let currentIndex=-1;
+let selectionMode=false;
+
+const selectedMedia=new Set();
+
+   const selectBtn=document.getElementById('selectBtn');
+
+selectBtn.addEventListener('click',()=>{
+
+  selectionMode=!selectionMode;
+
+  selectedMedia.clear();
+
+  selectBtn.textContent=selectionMode ? 'Cancelar' : 'Seleccionar';
+
+});
+   
+   
    
    async function loadClientGallery(){
 
@@ -222,6 +239,26 @@ for(const item of data){
     
     div.addEventListener('click',()=>{
 
+  if(selectionMode){
+
+    if(selectedMedia.has(item.id)){
+
+      selectedMedia.delete(item.id);
+
+      div.style.opacity='1';
+
+    }else{
+
+      selectedMedia.add(item.id);
+
+      div.style.opacity='0.5';
+
+    }
+
+    return;
+
+  }
+
   openViewer(item);
 
 });
@@ -262,6 +299,26 @@ if(item.media_type==='video'){
   div.appendChild(video);
 
 div.addEventListener('click',()=>{
+
+  if(selectionMode){
+
+    if(selectedMedia.has(item.id)){
+
+      selectedMedia.delete(item.id);
+
+      div.style.opacity='1';
+
+    }else{
+
+      selectedMedia.add(item.id);
+
+      div.style.opacity='0.5';
+
+    }
+
+    return;
+
+  }
 
   openViewer(item);
 
