@@ -544,7 +544,13 @@ let failed=0;
 
 for(const file of allowed){
 
-if(file.size>50*1024*1024){
+if(
+
+  (file.type.startsWith('image/') && file.size>50*1024*1024) ||
+
+  (file.type.startsWith('video/') && file.size>300*1024*1024)
+
+){
 
 failed++;
 
