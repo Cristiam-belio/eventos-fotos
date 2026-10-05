@@ -470,12 +470,19 @@ wrap.appendChild(img);
 }else{
 
 const v=document.createElement('video');
+  v.preload='metadata';
 
 v.src=urlData.signedUrl;
 
 v.controls=true;
 
 v.playsInline=true;
+v.addEventListener('loadedmetadata',()=>{
+
+  if(v.duration>0) v.currentTime=Math.min(0.1,v.duration/2);
+
+},{once:true});
+  
 
 wrap.appendChild(v);
 
