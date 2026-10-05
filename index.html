@@ -419,36 +419,21 @@ gallery.className='gallery';
 
 gallery.innerHTML='';
 
-for(const item of data){
 
-
-
-  
-let urlData=null, urlError=null;
-  try{
-  const response=await fetch('/api/r2-upload',{
+const keys=data.map(item=>item.file_path);
+const batchResponse=await fetch('/api/r2-upload',{
   method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({key:item.file_path})
-
-  });
-
-
-  if(!response.ok) throw new Error(await response.text());
-    const r2Data=await response.json();
-urlData={signedUrl:r2Data.viewUrl};
-
-    }catch(error){
-
-  urlError=error;
-
-}
-    
+  headers:{'Content-Type':'application/json'},
+  body:JSON.stringify({keys})
+});
+if(!batchResponse.ok) throw new Error(await batchResponse.text());
+  const batchData=await batchResponse.json();
+const signedUrls=batchData.urls;
   
-if(urlError){
-  console.error(urlError);
-  continue;
-}
+  
+for(const item of data){
+const urlData={signedUrl:signedUrls[item.file_path]};
+
 
 const wrap=document.createElement('div');
 
