@@ -575,11 +575,6 @@ if(!putRes.ok) throw new Error(`R2 PUT ${putRes.status}`);
   uploadError=error;
 
 }
-    
-    
-    
-  
-
   
 if(uploadError){
 
@@ -591,6 +586,61 @@ continue;
 
 }
 
+
+let thumbnailPath=null;
+
+  if(type==='photo'){
+
+const img=await createImageBitmap(file);
+const maxWidth=800;
+const scale=Math.min(1,maxWidth/img.width);
+const width=Math.round(img.width*scale);
+const height=Math.round(img.height*scale);
+const canvas=document.createElement('canvas');
+canvas.width=width;
+canvas.height=height;
+const ctx=canvas.getContext('2d');
+ctx.drawImage(img,0,0,width,height);
+const thumbnailBlob=await new Promise(resolve=>
+canvas.toBlob(resolve,'image/jpeg',0.75)
+);
+if(!thumbnailBlob) throw new Error('No se pudo crear la miniatura');
+const thumbnailName=`thumb-${file.name.replace(/\.[^.]+$/,'.jpg')}`;
+  const thumbSignRes=await fetch('/api/r2-upload',{
+
+  method:'POST',
+
+  headers:{'Content-Type':'application/json'},
+
+  body:JSON.stringify({fileName:thumbnailName,contentType:'image/jpeg'})
+
+});
+if(!thumbSignRes.ok) throw new Error(await thumbSignRes.text());
+
+const thumbData=await thumbSignRes.json();
+
+const thumbPutRes=await fetch(thumbData.uploadUrl,{
+
+  method:'PUT',
+
+  headers:{'Content-Type':'image/jpeg'},
+
+  body:thumbnailBlob
+
+});
+
+    if(!thumbPutRes.ok) throw new Error(await thumbPutRes.text());
+thumbnailPath=thumbData.key;
+    
+
+    
+}
+
+  
+
+
+
+  
 const {error:dbError}=
 
 await db.from('media').insert({
@@ -600,6 +650,8 @@ event_id:eventId,
 file_name:file.name,
 
 file_path:path,
+
+  thumbnail_path:thumbnailPath,
 
 media_type:type,
 
