@@ -256,6 +256,12 @@ if(item.media_type==='video'){
 
   div.appendChild(video);
 
+div.addEventListener('click',()=>{
+
+  openViewer(item);
+
+});
+  
 const playIcon=document.createElement('span');
 playIcon.textContent='▶';
 playIcon.style.position='absolute';
@@ -298,17 +304,35 @@ div.appendChild(playIcon);
 
   const urlData=await response.json();
 
-  const img=document.createElement('img');
+  let media;
 
-  img.src=urlData.viewUrl;
+if(item.media_type==='video'){
 
-  img.style.width='100%';
+  media=document.createElement('video');
 
-  img.style.height='100%';
+  media.src=urlData.viewUrl;
 
-  img.style.objectFit='contain';
+  media.controls=true;
 
-  viewer.appendChild(img);
+  media.autoplay=true;
+
+  media.playsInline=true;
+
+}else{
+
+  media=document.createElement('img');
+
+  media.src=urlData.viewUrl;
+
+}
+
+media.style.width='100%';
+
+media.style.height='100%';
+
+media.style.objectFit='contain';
+
+viewer.appendChild(media);
 
 
 const closeBtn=document.createElement('button');
