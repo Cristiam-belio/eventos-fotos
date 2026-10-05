@@ -249,6 +249,19 @@ if(item.media_type==='video'){
 
   div.appendChild(video);
 
+const playIcon=document.createElement('span');
+playIcon.textContent='▶';
+playIcon.style.position='absolute';
+playIcon.style.left='50%';
+playIcon.style.top='50%';
+playIcon.style.transform='translate(-50%,-50%)';
+playIcon.style.color='white';
+playIcon.style.fontSize='28px';
+playIcon.style.textShadow='0 1px 5px rgba(0,0,0,.8)';
+playIcon.style.pointerEvents='none';
+div.appendChild(playIcon);
+
+  
   gallery.appendChild(div);
 
 }
