@@ -252,6 +252,41 @@ for(const item of data){
       selectedMedia.add(item.id);
 
       div.style.opacity='0.5';
+const check=document.createElement('span');
+
+check.textContent='✓';
+
+check.className='selection-check';
+
+check.style.position='absolute';
+
+check.style.top='6px';
+
+check.style.right='6px';
+
+check.style.background='#007AFF';
+
+check.style.color='white';
+
+check.style.width='26px';
+
+check.style.height='26px';
+
+check.style.borderRadius='50%';
+
+check.style.display='flex';
+
+check.style.alignItems='center';
+
+check.style.justifyContent='center';
+
+check.style.fontWeight='bold';
+
+check.style.zIndex='10';
+
+div.appendChild(check);
+
+      
 
     }
 
@@ -307,12 +342,51 @@ div.addEventListener('click',()=>{
       selectedMedia.delete(item.id);
 
       div.style.opacity='1';
+const check=div.querySelector('.selection-check');
+
+if(check) check.remove();
 
     }else{
 
       selectedMedia.add(item.id);
 
       div.style.opacity='0.5';
+
+const check=document.createElement('span');
+
+check.textContent='✓';
+
+check.className='selection-check';
+
+check.style.position='absolute';
+
+check.style.top='6px';
+
+check.style.right='6px';
+
+check.style.background='#007AFF';
+
+check.style.color='white';
+
+check.style.width='26px';
+
+check.style.height='26px';
+
+check.style.borderRadius='50%';
+
+check.style.display='flex';
+
+check.style.alignItems='center';
+
+check.style.justifyContent='center';
+
+check.style.fontWeight='bold';
+
+check.style.zIndex='10';
+
+div.appendChild(check);
+
+      
 
     }
 
