@@ -214,7 +214,14 @@ for(const item of data){
     img.alt='Foto del evento';
 
     img.loading='lazy';
+    
+    div.addEventListener('click',()=>{
 
+  openViewer(item);
+
+});
+    
+    
     div.appendChild(img);
 
     gallery.appendChild(div);
@@ -269,6 +276,44 @@ div.appendChild(playIcon);
 }     
 
 }
+
+
+   async function openViewer(item){
+
+  const viewer=document.getElementById('viewer');
+
+  viewer.innerHTML='';
+
+  const response=await fetch('/api/r2-upload',{
+
+    method:'POST',
+
+    headers:{'Content-Type':'application/json'},
+
+    body:JSON.stringify({key:item.file_path})
+
+  });
+
+  if(!response.ok) return;
+
+  const urlData=await response.json();
+
+  const img=document.createElement('img');
+
+  img.src=urlData.viewUrl;
+
+  img.style.width='100%';
+
+  img.style.height='100%';
+
+  img.style.objectFit='contain';
+
+  viewer.appendChild(img);
+
+  viewer.style.display='block';
+
+}
+   
    loadClientGallery();
    
 
