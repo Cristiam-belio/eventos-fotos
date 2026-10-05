@@ -127,6 +127,9 @@ header h1{
   <h1>Mi galería</h1>
 
   <button id="selectBtn">Seleccionar</button>
+<button id="downloadBtn" style="display:none;">Descargar</button>
+
+    
 
 </header>
   <main>
@@ -154,6 +157,7 @@ let selectionMode=false;
 const selectedMedia=new Set();
 
    const selectBtn=document.getElementById('selectBtn');
+   const downloadBtn=document.getElementById('downloadBtn');
 
 selectBtn.addEventListener('click',()=>{
 
@@ -162,6 +166,10 @@ selectBtn.addEventListener('click',()=>{
   selectedMedia.clear();
 loadClientGallery();
   selectBtn.textContent=selectionMode ? 'Cancelar' : 'Seleccionar';
+downloadBtn.style.display=selectionMode ? 'inline-block' : 'none';
+
+
+  
 
 });
    
