@@ -197,6 +197,7 @@ const gallery=document.getElementById('gallery');
 gallery.innerHTML='';
 
 for(const item of data){
+  
 
   if(item.media_type==='photo'){
 
@@ -220,10 +221,39 @@ for(const item of data){
 
   }
 
-}
-     
+if(item.media_type==='video'){
 
-     
+  const div=document.createElement('div');
+
+  div.className='media-item';
+
+  const video=document.createElement('video');
+
+  video.src=signedUrls[item.file_path];
+
+  video.preload='metadata';
+
+  video.muted=true;
+
+  video.playsInline=true;
+
+  video.addEventListener('loadedmetadata',()=>{
+
+    if(video.duration>0){
+
+      video.currentTime=Math.min(0.1,video.duration/2);
+
+    }
+
+  },{once:true});
+
+  div.appendChild(video);
+
+  gallery.appendChild(div);
+
+}
+  
+}     
 
 }
    loadClientGallery();
