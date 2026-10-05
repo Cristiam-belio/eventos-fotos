@@ -247,6 +247,10 @@ for(const item of data){
 
       div.style.opacity='1';
 
+      const check=div.querySelector('.selection-check');
+
+if(check) check.remove();
+
     }else{
 
       selectedMedia.add(item.id);
