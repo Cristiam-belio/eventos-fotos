@@ -147,7 +147,9 @@ const SUPABASE_KEY='sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); 
 
 const eventId='f2e8adf2-c30c-4c47-a279-5cfbf5116194';
-
+let clientMedia=[];
+let currentIndex=-1;
+   
    async function loadClientGallery(){
 
   const {data,error}=await db
@@ -167,6 +169,9 @@ const eventId='f2e8adf2-c30c-4c47-a279-5cfbf5116194';
     return;
 
   }
+
+clientMedia=data;
+     
   console.log('Archivos del evento:',data);
 
    const keys=data.map(item=>item.thumbnail_path || item.file_path);
@@ -285,6 +290,8 @@ div.appendChild(playIcon);
 
 
    async function openViewer(item){
+     currentIndex=clientMedia.findIndex(media=>media.id===item.id);
+     
 
   const viewer=document.getElementById('viewer');
 
@@ -372,9 +379,104 @@ closeBtn.addEventListener('click',()=>{
 });
 
 viewer.appendChild(closeBtn);
+    
+const nextBtn=document.createElement('button');
+
+nextBtn.textContent='›';
+
+nextBtn.style.position='absolute';
+
+nextBtn.style.right='12px';
+
+nextBtn.style.top='50%';
+
+nextBtn.style.transform='translateY(-50%)';
+
+nextBtn.style.zIndex='1001';
+
+nextBtn.style.background='rgba(0,0,0,.35)';
+
+nextBtn.style.color='white';
+
+nextBtn.style.border='0';
+
+nextBtn.style.borderRadius='50%';
+
+nextBtn.style.width='48px';
+
+nextBtn.style.height='48px';
+
+nextBtn.style.fontSize='38px';
+
+nextBtn.style.cursor='pointer';
+
+nextBtn.addEventListener('click',showNext);
+
+viewer.appendChild(nextBtn);
+
+
+
+     const previousBtn=document.createElement('button');
+
+previousBtn.textContent='‹';
+
+previousBtn.style.position='absolute';
+
+previousBtn.style.left='12px';
+
+previousBtn.style.top='50%';
+
+previousBtn.style.transform='translateY(-50%)';
+
+previousBtn.style.zIndex='1001';
+
+previousBtn.style.background='rgba(0,0,0,.35)';
+
+previousBtn.style.color='white';
+
+previousBtn.style.border='0';
+
+previousBtn.style.borderRadius='50%';
+
+previousBtn.style.width='48px';
+
+previousBtn.style.height='48px';
+
+previousBtn.style.fontSize='38px';
+
+previousBtn.style.cursor='pointer';
+
+previousBtn.addEventListener('click',showPrevious);
+
+viewer.appendChild(previousBtn);
 
      
+
+     
+     
   viewer.style.display='block';
+
+}
+
+
+function showNext(){
+
+  if(currentIndex<clientMedia.length-1){
+
+    openViewer(clientMedia[currentIndex+1]);
+
+  }
+
+}
+
+
+function showPrevious(){
+
+  if(currentIndex>0){
+
+    openViewer(clientMedia[currentIndex-1]);
+
+  }
 
 }
    
