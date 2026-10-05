@@ -420,7 +420,16 @@ gallery.className='gallery';
 gallery.innerHTML='';
 
 
-const keys=data.map(item=>item.file_path);
+const keys=data.map(item=>
+
+  item.media_type==='photo' && item.thumbnail_path
+
+    ? item.thumbnail_path
+
+    : item.file_path
+
+);
+  
 const batchResponse=await fetch('/api/r2-upload',{
   method:'POST',
   headers:{'Content-Type':'application/json'},
@@ -430,9 +439,16 @@ if(!batchResponse.ok) throw new Error(await batchResponse.text());
   const batchData=await batchResponse.json();
 const signedUrls=batchData.urls;
   
-  
 for(const item of data){
-const urlData={signedUrl:signedUrls[item.file_path]};
+const displayPath=
+
+  item.media_type==='photo' && item.thumbnail_path
+
+    ? item.thumbnail_path
+
+    : item.file_path;
+
+const urlData={signedUrl:signedUrls[displayPath]};
 
 
 const wrap=document.createElement('div');
