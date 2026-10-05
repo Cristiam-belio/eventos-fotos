@@ -310,6 +310,46 @@ div.appendChild(playIcon);
 
   viewer.appendChild(img);
 
+
+const closeBtn=document.createElement('button');
+
+closeBtn.textContent='×';
+
+closeBtn.style.position='absolute';
+
+closeBtn.style.top='18px';
+
+closeBtn.style.right='18px';
+
+closeBtn.style.zIndex='1001';
+
+closeBtn.style.background='rgba(0,0,0,.45)';
+
+closeBtn.style.color='white';
+
+closeBtn.style.border='0';
+
+closeBtn.style.borderRadius='50%';
+
+closeBtn.style.width='44px';
+
+closeBtn.style.height='44px';
+
+closeBtn.style.fontSize='32px';
+
+closeBtn.style.cursor='pointer';
+
+closeBtn.addEventListener('click',()=>{
+
+  viewer.style.display='none';
+
+  viewer.innerHTML='';
+
+});
+
+viewer.appendChild(closeBtn);
+
+     
   viewer.style.display='block';
 
 }
