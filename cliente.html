@@ -139,7 +139,44 @@ header h1{
 
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
+ <script>
+const SUPABASE_URL='https://qzsukbfxqdyhpbzlzlwd.supabase.co';
+const SUPABASE_KEY='sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
+const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); 
+
+const eventId='f2e8adf2-c30c-4c47-a279-5cfbf5116194';
+
+   async function loadClientGallery(){
+
+  const {data,error}=await db
+
+    .from('media')
+
+    .select('*')
+
+    .eq('event_id',eventId)
+
+    .order('created_at',{ascending:false});
+
+  if(error){
+
+    console.error(error);
+
+    return;
+
+  }
+  console.log('Archivos del evento:',data);
+
+}
+   loadClientGallery();
+   
+
+
+
+   
+</script> 
 
   
 </body>
