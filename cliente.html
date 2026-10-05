@@ -169,6 +169,62 @@ const eventId='f2e8adf2-c30c-4c47-a279-5cfbf5116194';
   }
   console.log('Archivos del evento:',data);
 
+   const keys=data.map(item=>item.thumbnail_path || item.file_path);
+
+const response=await fetch('/api/r2-upload',{
+
+  method:'POST',
+
+  headers:{'Content-Type':'application/json'},
+
+  body:JSON.stringify({keys})
+
+});
+
+if(!response.ok){
+
+  console.error('Error al obtener las imágenes');
+
+  return;
+
+}
+
+const urlData=await response.json();
+
+const signedUrls=urlData.urls;
+const gallery=document.getElementById('gallery');
+
+gallery.innerHTML='';
+
+for(const item of data){
+
+  if(item.media_type==='photo'){
+
+    const div=document.createElement('div');
+
+    div.className='media-item';
+
+    const img=document.createElement('img');
+
+    const imageKey=item.thumbnail_path || item.file_path;
+
+    img.src=signedUrls[imageKey];
+
+    img.alt='Foto del evento';
+
+    img.loading='lazy';
+
+    div.appendChild(img);
+
+    gallery.appendChild(div);
+
+  }
+
+}
+     
+
+     
+
 }
    loadClientGallery();
    
