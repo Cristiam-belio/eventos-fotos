@@ -59,6 +59,20 @@ header h1{
 
 }
 
+#eventName{
+
+    margin-top:2px;
+
+    font-size:18px;
+
+    font-weight:700;
+
+    color:white;
+
+}
+
+
+  
 #selectBtn{
 
   border:0;
@@ -154,7 +168,13 @@ header h1{
 
   <header>
 
-  <h1>Mi galería</h1>
+<div class="gallery-title">
+
+    <h1>Mi galería</h1>
+
+    <div id="eventName"></div>
+
+</div>
 
   <button id="selectBtn">Seleccionar</button>
 <button id="downloadBtn" style="display:none;">Descargar</button>
@@ -183,6 +203,26 @@ const SUPABASE_KEY='sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); 
 
 const eventId='f2e8adf2-c30c-4c47-a279-5cfbf5116194';
+const eventName=document.getElementById('eventName');
+   async function loadEventName(){
+
+  const {data,error}=await db
+
+    .from('events')
+
+    .select('celebrant_names')
+
+    .eq('id',eventId)
+
+    .single();
+
+  if(error || !data) return;
+
+  eventName.textContent=data.celebrant_names || '';
+
+}
+
+   
 let clientMedia=[];
 let currentIndex=-1;
 let selectionMode=false;
@@ -270,7 +310,10 @@ selectBtn.textContent='Seleccionar';
 
 downloadBtn.style.display='none';
 
-loadClientGallery();
+
+  
+  
+  loadClientGallery();
 
 return;
 
@@ -779,7 +822,7 @@ function showPrevious(){
   }
 
 }
-   
+   loadEventName();
    loadClientGallery();
    
 
