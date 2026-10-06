@@ -106,7 +106,40 @@ header h1{
 
 }
 
+#deleteBtn{
 
+  position:fixed;
+
+  right:20px;
+
+  bottom:30px;
+
+  z-index:200;
+
+  width:64px;
+
+  height:64px;
+
+  border:0;
+
+  border-radius:50%;
+
+  background:#1c1c1e;
+
+  color:white;
+
+  font-size:30px;
+
+  align-items:center;
+
+  justify-content:center;
+
+  cursor:pointer;
+
+}
+
+
+  
   
 .gallery{
 
@@ -176,8 +209,10 @@ header h1{
 
 </div>
 
-  <button id="selectBtn">Seleccionar</button>
+<button id="selectBtn">Seleccionar</button>
 <button id="downloadBtn" style="display:none;">Descargar</button>
+
+    <button id="deleteBtn" style="display:none;" aria-label="Eliminar archivos seleccionados">🗑</button>
 
     
 
@@ -231,6 +266,9 @@ const selectedMedia=new Set();
 
    const selectBtn=document.getElementById('selectBtn');
    const downloadBtn=document.getElementById('downloadBtn');
+   const deleteBtn=document.getElementById('deleteBtn');
+
+   
 
 selectBtn.addEventListener('click',()=>{
 
@@ -240,6 +278,8 @@ selectBtn.addEventListener('click',()=>{
 loadClientGallery();
   selectBtn.textContent=selectionMode ? 'Cancelar' : 'Seleccionar';
 downloadBtn.style.display=selectionMode ? 'inline-block' : 'none';
+deleteBtn.style.display=selectionMode ? 'flex' : 'none';
+  
 
 });
 
@@ -309,6 +349,7 @@ selectedMedia.clear();
 selectBtn.textContent='Seleccionar';
 
 downloadBtn.style.display='none';
+deleteBtn.style.display='none';  
 
 
   
