@@ -230,6 +230,17 @@ link.click();
 link.remove();
 
 setTimeout(()=>URL.revokeObjectURL(downloadUrl),1000);
+  alert('¡Listo! Verifica tu carpeta de descargas.');
+
+  selectionMode=false;
+
+selectedMedia.clear();
+
+selectBtn.textContent='Seleccionar';
+
+downloadBtn.style.display='none';
+
+loadClientGallery();
 
 return;
 
@@ -270,7 +281,18 @@ link.click();
 
 link.remove();
 
-URL.revokeObjectURL(downloadUrl);
+setTimeout(()=>URL.revokeObjectURL(downloadUrl),1000);
+    alert('¡Listo! Verifica tu carpeta de descargas.');
+
+selectionMode=false;
+
+selectedMedia.clear();
+
+selectBtn.textContent='Seleccionar';
+
+downloadBtn.style.display='none';
+
+loadClientGallery();
     
 
 }
