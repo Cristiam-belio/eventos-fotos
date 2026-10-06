@@ -280,7 +280,110 @@ deleteBtn.style.display=selectionMode ? 'flex' : 'none';
 
 });
 
+deleteBtn.addEventListener('click',async()=>{
 
+  
+
+  if(selectedMedia.size===0){
+
+    alert('Selecciona al menos una foto o video');
+
+    return;
+
+  }
+
+  const confirmed=confirm(`¿Eliminar ${selectedMedia.size} archivo(s)?\n\nEsta acción no se puede deshacer.`);
+
+  if(!confirmed){
+
+    return;
+
+  }
+
+  const filesToDelete=clientMedia.filter(item=>selectedMedia.has(item.id));
+
+    try {
+
+    for(const item of filesToDelete){
+
+    const response=await fetch('/api/r2-delete',{
+
+      method:'POST',
+
+      headers:{'Content-Type':'application/json'},
+
+      body:JSON.stringify({key:item.file_path})
+
+    });
+
+    if(!response.ok){
+
+      throw new Error('No se pudo eliminar el archivo de R2');
+
+    }
+
+    if(item.thumbnail_path && item.thumbnail_path!==item.file_path){
+
+      const thumbResponse=await fetch('/api/r2-delete',{
+
+        method:'POST',
+
+        headers:{'Content-Type':'application/json'},
+
+        body:JSON.stringify({key:item.thumbnail_path})
+
+      });
+
+      if(!thumbResponse.ok){
+
+        throw new Error('No se pudo eliminar la miniatura de R2');
+
+      }
+
+    }
+
+
+      
+  }
+
+  const { error: deleteError }=await db
+
+    .from('media')
+
+    .delete()
+
+    .in('id',[...selectedMedia]);
+
+  if(deleteError){
+
+    throw new Error('No se pudo eliminar el registro de Supabase');
+
+  }
+
+    selectedMedia.clear();
+
+  selectionMode=false;
+
+  selectBtn.textContent='Seleccionar';
+
+  downloadBtn.style.display='none';
+
+  deleteBtn.style.display='none';
+
+  await loadClientGallery();
+
+  } catch(error) {
+
+    console.error('Error al eliminar:', error);
+
+    alert('No se pudieron eliminar los archivos. Inténtalo nuevamente.');
+
+  }
+
+      
+});
+
+   
 downloadBtn.addEventListener('click',async()=>{
 
   if(selectedMedia.size===0){
