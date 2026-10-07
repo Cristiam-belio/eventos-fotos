@@ -1,4 +1,7 @@
 import { S3Client, DeleteObjectCommand } from "@aws-sdk/client-s3";
+import { createClient } from "@supabase/supabase-js";
+
+
 
 const r2 = new S3Client({
 
@@ -16,6 +19,14 @@ const r2 = new S3Client({
 
 });
 
+const supabaseAdmin = createClient(
+
+  "https://qzsukbfxqdyhpbzlzlwd.supabase.co",
+
+  process.env.SUPABASE_SERVICE_ROLE_KEY
+
+);
+
 export default async function handler(req, res) {
 
   if (req.method !== "POST") {
@@ -26,13 +37,13 @@ export default async function handler(req, res) {
 
   try {
 
-        const { key } = req.body;
+        const { key, mediaId } = req.body;
 
-    if (!key) {
+if (!key) {
 
-      return res.status(400).json({ error: "Falta la ruta del archivo" });
+  return res.status(400).json({ error: "Falta la clave del archivo" });
 
-    }
+}
 
 
     const command = new DeleteObjectCommand({
@@ -44,6 +55,26 @@ export default async function handler(req, res) {
     });
 
     await r2.send(command);
+
+    if (mediaId) {
+
+  const { error: deleteError } = await supabaseAdmin
+
+    .from("media")
+
+    .delete()
+
+    .eq("id", mediaId);
+
+  if (deleteError) {
+
+    throw deleteError;
+
+  }
+
+}
+
+    
 
     return res.status(200).json({ success: true });
     
