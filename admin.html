@@ -1606,7 +1606,15 @@ console.error(error);
 
 }else{
 
-const clientPassword = String(Math.floor(100000 + Math.random() * 900000));
+const clientPassword = document.getElementById('client-password').value.trim();
+if (!clientPassword) {
+
+  alert('Escribe una contraseña para el cliente.');
+
+  return;
+
+}
+  
 
   const passwordResponse = await fetch('/api/client-password', {
 
