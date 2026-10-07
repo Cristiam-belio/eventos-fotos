@@ -356,7 +356,7 @@ const confirmed=confirm(`¿Eliminar ${selectedMedia.size} archivo(s)?\n\nEsta ac
 
       headers:{'Content-Type':'application/json'},
 
-      body:JSON.stringify({mediaId:item.id})
+      body:JSON.stringify({key:item.file_path,mediaId:item.id})
 
     })
 
