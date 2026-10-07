@@ -1561,7 +1561,7 @@ counter++;
 
 }
 
-const {error}=await db
+const {data:newEvent,error}=await db
 
 .from('events')
 
@@ -1586,7 +1586,13 @@ welcomeInput.value.trim() ||
 
 'Una noche para recordar'
 
-});
+})
+
+.select('id')
+
+.single();
+
+  
 
 if(error){
 
@@ -1610,7 +1616,7 @@ const clientPassword = String(Math.floor(100000 + Math.random() * 900000));
 
   body: JSON.stringify({
 
-    eventId: selectedEventId,
+    eventId: newEvent.id,
 
     password: clientPassword
 
