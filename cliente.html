@@ -346,13 +346,25 @@ const confirmed=confirm(`¿Eliminar ${selectedMedia.size} archivo(s)?\n\nEsta ac
       
   }
 
-  const { error: deleteError }=await db
+  const deleteResults = await Promise.all(
 
-    .from('media')
+  filesToDelete.map(item =>
 
-    .delete()
+    fetch('/api/r2-delete', {
 
-    .in('id',[...selectedMedia]);
+      method:'POST',
+
+      headers:{'Content-Type':'application/json'},
+
+      body:JSON.stringify({mediaId:item.id})
+
+    })
+
+  )
+
+);
+
+const deleteError = deleteResults.some(response => !response.ok);
 
   if(deleteError){
 
