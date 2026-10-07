@@ -352,6 +352,23 @@ placeholder="Una noche para recordar">
 
 <input id="secondary" type="color" value="#D4AF37">
 
+<label>Contraseña del cliente</label>
+
+<input
+
+  id="clientPassword"
+
+  type="password"
+
+  placeholder="Contraseña para acceder a su galería"
+
+>
+
+
+
+
+
+  
 <button id="create">
 
 Crear evento
@@ -1582,6 +1599,31 @@ createStatus.className='status error';
 console.error(error);
 
 }else{
+
+const clientPassword = String(Math.floor(100000 + Math.random() * 900000));
+
+  const passwordResponse = await fetch('/api/client-password', {
+
+  method: 'POST',
+
+  headers: {'Content-Type':'application/json'},
+
+  body: JSON.stringify({
+
+    eventId: selectedEventId,
+
+    password: clientPassword
+
+  })
+
+});
+
+  if (!passwordResponse.ok) {
+
+  throw new Error('No se pudo guardar la contraseña del cliente');
+
+}
+  
 
 createStatus.textContent=
 
