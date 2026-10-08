@@ -30,20 +30,33 @@ if (!eventId || !password) {
 
     const passwordHash = await bcrypt.hash(password, 12);
 
-const { error: updateError } = await supabaseAdmin
+const { data: updatedRows, error: updateError } = await supabaseAdmin
 
   .from('events')
 
   .update({ client_password_hash: passwordHash })
 
-  .eq('id', eventId);
 
+
+.eq('id', eventId)
+
+.select('id');
+  
+    
    if (updateError) {
 
   throw updateError;
 
 }
 
+if (!updatedRows || updatedRows.length === 0) {
+
+  throw new Error('No se actualizó ningún evento');
+
+}
+
+
+    
     return res.status(200).json({ success: true });
     
     
