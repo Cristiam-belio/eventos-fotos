@@ -1539,7 +1539,8 @@ let counter=2;
 
 while(true){
 
-const {data}=await db
+const {data,error:slugError}=await db
+  
 
 .from('events')
 
@@ -1548,6 +1549,21 @@ const {data}=await db
 .eq('slug',slug)
 
 .maybeSingle();
+
+
+if(slugError){
+
+  console.error('Error al comprobar el slug:', slugError);
+
+  alert('No se pudo comprobar el nombre del evento.');
+
+  createButton.disabled=false;
+
+  createButton.textContent='Crear evento';
+
+  return;
+
+}
 
 if(!data)break;
 
