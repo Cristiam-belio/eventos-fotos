@@ -535,6 +535,33 @@ Guardar cambios
 
 </button>
 
+<hr style="margin:24px 0;">
+
+<h3>Acceso del cliente</h3>
+
+<p>Establece o cambia la contraseña de acceso del cliente a este evento.</p>
+
+<label for="client-password">Contraseña del cliente</label>
+
+<input
+  id="client-password"
+  type="password"
+  placeholder="Nueva contraseña"
+  autocomplete="new-password"
+  minlength="12"
+>
+
+<button
+  type="button"
+  id="save-client-password"
+>
+  Guardar contraseña del cliente
+</button>
+
+<div id="client-password-status" class="status"></div>
+
+  
+
 <div id="selected-id"></div>
 
 </div>
@@ -1716,6 +1743,113 @@ await loadEvents();
 }
 
 });
+
+
+
+document.getElementById('save-client-password')
+
+  .addEventListener('click', async () => {
+
+    const status = document.getElementById('client-password-status');
+
+    const passwordInput = document.getElementById('client-password');
+
+    const button = document.getElementById('save-client-password');
+
+    const password = passwordInput.value;
+
+    if (!selectedEventId) {
+
+      status.textContent = 'Primero selecciona un evento.';
+
+      status.className = 'status error';
+
+      return;
+
+    }
+
+    if (password.length < 12) {
+
+      status.textContent = 'La contraseña debe tener al menos 12 caracteres.';
+
+      status.className = 'status error';
+
+      return;
+
+    }
+
+    button.disabled = true;
+
+    status.textContent = 'Guardando contraseña...';
+
+    status.className = 'status';
+
+    try {
+
+      const { data: { session }, error: sessionError } =
+
+        await db.auth.getSession();
+
+      if (sessionError || !session?.access_token) {
+
+        throw new Error('Tu sesión ha vencido. Inicia sesión nuevamente.');
+
+      }
+
+      const response = await fetch('/api/client-password', {
+
+        method: 'POST',
+
+        headers: {
+
+          'Content-Type': 'application/json',
+
+          'Authorization': `Bearer ${session.access_token}`
+
+        },
+
+        body: JSON.stringify({
+
+          eventId: selectedEventId,
+
+          password: password
+
+        })
+
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result.success) {
+
+        throw new Error(result.error || 'No se pudo guardar la contraseña.');
+
+      }
+
+      status.textContent = 'Contraseña guardada correctamente.';
+
+      status.className = 'status success';
+
+      passwordInput.value = '';
+
+    } catch (error) {
+
+      status.textContent = error.message;
+
+      status.className = 'status error';
+
+      console.error('Error al guardar contraseña:', error);
+
+    } finally {
+
+      button.disabled = false;
+
+    }
+
+  });
+
+
+  
 
 loadEvents();
 
