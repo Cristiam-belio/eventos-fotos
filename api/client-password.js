@@ -1,6 +1,9 @@
 import { createClient } from '@supabase/supabase-js';
 
 import bcrypt from 'bcryptjs';
+const ADMIN_USER_ID = process.env.ADMIN_USER_ID;
+
+
 
 const supabaseAdmin = createClient(
 
@@ -20,7 +23,69 @@ export default async function handler(req, res) {
 
   try {
 
-    const { eventId, password } = req.body;
+  // Verificar que exista un administrador configurado
+
+  if (!ADMIN_USER_ID) {
+
+    return res.status(500).json({
+
+      error: 'Administrador no configurado'
+
+    });
+
+  }
+
+  // Obtener el token de autenticación
+
+  const authHeader = req.headers.authorization || '';
+
+  const token = authHeader.startsWith('Bearer ')
+
+    ? authHeader.slice(7)
+
+    : null;
+
+  if (!token) {
+
+    return res.status(401).json({
+
+      error: 'Sesión de administrador requerida'
+
+    });
+
+  }
+
+  // Validar el token con Supabase
+
+  const { data: { user }, error: authError } =
+
+    await supabaseAdmin.auth.getUser(token);
+
+  if (authError || !user) {
+
+    return res.status(401).json({
+
+      error: 'Sesión inválida o vencida'
+
+    });
+
+  }
+
+  // Comprobar que sea el administrador autorizado
+
+  if (user.id !== ADMIN_USER_ID) {
+
+    return res.status(403).json({
+
+      error: 'No tienes permisos de administrador'
+
+    });
+
+  }
+
+  // Continuar con el cambio de contraseña
+
+  const { eventId, password } = req.body || {};
 
 if (!eventId || !password) {
 
