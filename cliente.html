@@ -30,82 +30,6 @@
 
   }
 
-#loginScreen{
-
-  position:fixed;
-
-  inset:0;
-
-  z-index:9999;
-
-  background:#fff;
-
-  display:flex;
-
-  align-items:center;
-
-  justify-content:center;
-
-}
-
-#loginBox{
-
-  width:min(88%,360px);
-
-  padding:32px 24px;
-
-  border-radius:22px;
-
-  background:#f5f5f7;
-
-  text-align:center;
-
-}
-
-#loginInput{
-
-  width:100%;
-
-  padding:14px;
-
-  margin-top:18px;
-
-  border:1px solid #d1d1d6;
-
-  border-radius:12px;
-
-  font-size:16px;
-
-  background:#fff;
-
-}
-
-#loginBtn{
-
-  width:100%;
-
-  padding:14px;
-
-  margin-top:12px;
-
-  border:0;
-
-  border-radius:12px;
-
-  background:#1c1c1e;
-
-  color:white;
-
-  font-size:16px;
-
-  font-weight:700;
-
-  cursor:pointer;
-
-}
-
-  
-
 header{
   position: sticky;
 
@@ -274,33 +198,6 @@ height:76px;
 
 <body>
 
-<div id="loginScreen">
-
-  <div id="loginBox">
-
-    <h2>Tu galería privada</h2>
-
-    <p>Accede para administrar las fotos y videos de tu evento.</p>
-
-    <input
-
-      id="loginInput"
-
-      type="password"
-
-      placeholder="Contraseña"
-
-      autocomplete="current-password"
-
-    >
-
-    <button id="loginBtn" type="button">Entrar</button>
-
-  </div>
-
-</div>
-
-  
   <header>
 
 <div class="gallery-title">
@@ -337,10 +234,6 @@ const SUPABASE_URL='https://qzsukbfxqdyhpbzlzlwd.supabase.co';
 const SUPABASE_KEY='sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); 
 
-const loginScreen=document.getElementById('loginScreen');
-const loginInput=document.getElementById('loginInput');
-const loginBtn=document.getElementById('loginBtn');
- 
 const eventId='f2e8adf2-c30c-4c47-a279-5cfbf5116194';
 const eventName=document.getElementById('eventName');
    async function loadEventName(){
