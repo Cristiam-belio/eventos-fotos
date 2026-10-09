@@ -198,6 +198,20 @@ height:76px;
 
 <body>
 
+<div id="clientLogin" style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#f5f5f7;padding:20px;">
+  <div style="width:100%;max-width:380px;background:white;padding:30px;border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,.08);text-align:center;">
+    <h2 style="margin-top:0;">Acceso a mi galería</h2>
+    <p>Introduce la contraseña de tu evento.</p>
+    <form id="clientLoginForm">
+      <input id="clientPassword" type="password" placeholder="Contraseña" required autocomplete="current-password" style="width:100%;padding:15px;border:1px solid #ccc;border-radius:10px;font-size:16px;margin-bottom:15px;">
+      <button id="clientLoginBtn" type="submit" style="width:100%;padding:15px;background:#1c1c1e;color:white;border:0;border-radius:10px;font-size:16px;">Entrar a mi galería</button>
+    </form>
+    <p id="clientLoginStatus" role="status" style="color:#c62828;font-size:14px;"></p>
+  </div>
+</div>
+
+  
+
   <header>
 
 <div class="gallery-title">
@@ -234,7 +248,8 @@ const SUPABASE_URL='https://qzsukbfxqdyhpbzlzlwd.supabase.co';
 const SUPABASE_KEY='sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); 
 
-const eventId='f2e8adf2-c30c-4c47-a279-5cfbf5116194';
+let eventId = null;
+const eventSlug = new URLSearchParams(window.location.search).get('evento');
 const eventName=document.getElementById('eventName');
    async function loadEventName(){
 
@@ -975,9 +990,77 @@ function showPrevious(){
   }
 
 }
-   loadEventName();
-   loadClientGallery();
-   
+   const clientLogin = document.getElementById('clientLogin');
+const clientLoginForm = document.getElementById('clientLoginForm');
+const clientLoginStatus = document.getElementById('clientLoginStatus');
+const clientLoginBtn = document.getElementById('clientLoginBtn');
+
+document.querySelector('header').style.display = 'none';
+document.querySelector('main').style.display = 'none';
+
+async function prepareClientAccess() {
+  if (!eventSlug) {
+    clientLoginStatus.textContent = 'El enlace del evento no es válido.';
+    clientLoginBtn.disabled = true;
+    return;
+  }
+
+  const { data, error } = await db
+    .from('events')
+    .select('id')
+    .eq('slug', eventSlug)
+    .single();
+
+  if (error || !data) {
+    clientLoginStatus.textContent = 'No se encontró el evento.';
+    clientLoginBtn.disabled = true;
+    return;
+  }
+
+  eventId = data.id;
+}
+
+clientLoginForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (!eventId) return;
+
+  const password = document.getElementById('clientPassword').value;
+  clientLoginBtn.disabled = true;
+  clientLoginStatus.textContent = 'Verificando acceso...';
+
+  try {
+    const response = await fetch('/api/cliente-login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ eventId, password })
+    });
+
+    const result = await response.json();
+
+    if (!response.ok || !result.success || !result.token) {
+      throw new Error(result.error || 'No se pudo iniciar sesión.');
+    }
+
+    sessionStorage.setItem('clientToken', result.token);
+    sessionStorage.setItem('clientEventId', eventId);
+
+    document.getElementById('clientPassword').value = '';
+    clientLogin.style.display = 'none';
+    document.querySelector('header').style.display = 'flex';
+    document.querySelector('main').style.display = 'block';
+
+    await loadEventName();
+    await loadClientGallery();
+
+  } catch (error) {
+    clientLoginStatus.textContent = error.message;
+  } finally {
+    clientLoginBtn.disabled = false;
+  }
+});
+
+prepareClientAccess();
 
 
 
