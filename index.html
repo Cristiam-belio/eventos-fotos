@@ -488,7 +488,7 @@ async function loadGallery() {
           wrap.appendChild(img);
         } else {
           const v = document.createElement('video');
-          v.preload = 'metadata';
+          v.preload = 'none';
           v.src = url;
           v.controls = true;
           v.playsInline = true;
@@ -545,6 +545,8 @@ async function loadGallery() {
   observer.observe(sentinel);
   await loadNextPage();
 }
+
+  
 picker.addEventListener('change',async()=>{
 
 const files=[...picker.files];
