@@ -396,127 +396,155 @@ await loadGallery();
 
 }
 
-async function loadGallery(){
+async function loadGallery() {
+  const PAGE_SIZE = 20;
+  let nextOffset = 0;
+  let loading = false;
+  let finished = false;
 
-const {data,error}=await db
+  gallery.className = 'gallery';
+  gallery.innerHTML = '';
 
-.from('media')
+  const sentinel = document.createElement('div');
+  sentinel.style.gridColumn = '1 / -1';
+  sentinel.style.height = '1px';
 
-.select('file_path,thumbnail_path,media_type,created_at')
+  gallery.after(sentinel);
 
-.eq('event_id',eventId)
+  const observer = new IntersectionObserver(
+    entries => {
+      if (entries[0].isIntersecting) loadNextPage();
+    },
+    { rootMargin: '500px 0px' }
+  );
 
-.order('created_at',{ascending:false});
+  async function loadNextPage() {
+    if (loading || finished) return;
+    loading = true;
 
-if(error){
+    try {
+      const { data, error } = await db
+        .from('media')
+        .select('file_path,thumbnail_path,media_type,created_at')
+        .eq('event_id', eventId)
+        .order('created_at', { ascending: false })
+        .order('file_path', { ascending: false })
+        .range(nextOffset, nextOffset + PAGE_SIZE - 1);
 
-gallery.className='empty';
+      if (error) throw error;
 
-gallery.textContent='La galería aún no está disponible.';
+      if (!data || data.length === 0) {
+        finished = true;
+        observer.disconnect();
+        sentinel.remove();
 
-console.error(error);
+        if (nextOffset === 0) {
+          gallery.className = 'empty';
+          gallery.textContent =
+            'Aquí aparecerán las fotos y videos compartidos.';
+        }
+        return;
+      }
 
-return;
+      const keys = data.map(item =>
+        item.media_type === 'photo' && item.thumbnail_path
+          ? item.thumbnail_path
+          : item.file_path
+      );
 
+      const response = await fetch('/api/r2-upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ keys })
+      });
+
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+
+      const result = await response.json();
+      const signedUrls = result.urls;
+
+      const fragment = document.createDocumentFragment();
+
+      for (const item of data) {
+        const displayPath =
+          item.media_type === 'photo' && item.thumbnail_path
+            ? item.thumbnail_path
+            : item.file_path;
+
+        const url = signedUrls[displayPath];
+        if (!url) continue;
+
+        const wrap = document.createElement('div');
+        wrap.className = 'media-wrap';
+
+        if (item.media_type === 'photo') {
+          const img = document.createElement('img');
+          img.loading = 'lazy';
+          img.decoding = 'async';
+          img.src = url;
+          img.alt = 'Recuerdo del evento';
+          wrap.appendChild(img);
+        } else {
+          const v = document.createElement('video');
+          v.preload = 'metadata';
+          v.src = url;
+          v.controls = true;
+          v.playsInline = true;
+
+          v.addEventListener('loadedmetadata', () => {
+            if (v.duration > 0) {
+              v.currentTime = Math.min(0.1, v.duration / 2);
+            }
+          }, { once: true });
+
+          wrap.appendChild(v);
+        }
+
+        const label = document.createElement('span');
+        label.className = 'media-label';
+        label.textContent =
+          item.media_type === 'photo' ? 'Foto' : 'Video';
+
+        wrap.appendChild(label);
+        fragment.appendChild(wrap);
+      }
+
+      gallery.appendChild(fragment);
+      nextOffset += data.length;
+
+      if (data.length < PAGE_SIZE) {
+        finished = true;
+        observer.disconnect();
+        sentinel.remove();
+      }
+
+    } catch (error) {
+      console.error('Error al cargar galería:', error);
+      observer.disconnect();
+      sentinel.remove();
+
+      const retry = document.createElement('button');
+      retry.textContent = 'Reintentar carga';
+      retry.className = 'upload';
+      retry.style.gridColumn = '1 / -1';
+
+      retry.onclick = () => {
+        retry.remove();
+        observer.observe(sentinel);
+        loadNextPage();
+      };
+
+      gallery.appendChild(retry);
+    } finally {
+      loading = false;
+    }
+  }
+
+  observer.observe(sentinel);
+  await loadNextPage();
 }
-
-if(!data.length){
-
-gallery.className='empty';
-
-gallery.textContent='Aquí aparecerán las fotos y videos compartidos.';
-
-return;
-
-}
-
-gallery.className='gallery';
-
-gallery.innerHTML='';
-
-
-const keys=data.map(item=>
-
-  item.media_type==='photo' && item.thumbnail_path
-
-    ? item.thumbnail_path
-
-    : item.file_path
-
-);
-  
-const batchResponse=await fetch('/api/r2-upload',{
-  method:'POST',
-  headers:{'Content-Type':'application/json'},
-  body:JSON.stringify({keys})
-});
-if(!batchResponse.ok) throw new Error(await batchResponse.text());
-  const batchData=await batchResponse.json();
-const signedUrls=batchData.urls;
-  
-for(const item of data){
-const displayPath=
-
-  item.media_type==='photo' && item.thumbnail_path
-
-    ? item.thumbnail_path
-
-    : item.file_path;
-
-const urlData={signedUrl:signedUrls[displayPath]};
-
-
-const wrap=document.createElement('div');
-
-wrap.className='media-wrap';
-
-if(item.media_type==='photo'){
-
-const img=document.createElement('img');
-
-img.loading='lazy';
-
-img.src=urlData.signedUrl;
-
-img.alt='Recuerdo del evento';
-
-wrap.appendChild(img);
-
-}else{
-
-const v=document.createElement('video');
-v.preload='metadata';
-
-v.src=urlData.signedUrl;
-
-v.controls=true;
-
-v.playsInline=true;
-v.addEventListener('loadedmetadata',()=>{
-
-  if(v.duration>0) v.currentTime=Math.min(0.1,v.duration/2);
-
-},{once:true});
-  
-
-wrap.appendChild(v);
-
-}
-
-const label=document.createElement('span');
-
-label.className='media-label';
-
-label.textContent=item.media_type==='photo'?'Foto':'Video';
-
-wrap.appendChild(label);
-
-gallery.appendChild(wrap);
-
-}
-
-}
-
 picker.addEventListener('change',async()=>{
 
 const files=[...picker.files];
