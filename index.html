@@ -446,11 +446,19 @@ async function loadGallery() {
         return;
       }
 
-      const keys = data.map(item =>
-        item.media_type === 'photo' && item.thumbnail_path
-          ? item.thumbnail_path
-          : item.file_path
-      );
+const keys = [...new Set(data.flatMap(item => {
+  const paths = [
+    item.media_type === 'photo' && item.thumbnail_path
+      ? item.thumbnail_path
+      : item.file_path
+  ];
+
+  if (item.media_type === 'video' && item.thumbnail_path) {
+    paths.push(item.thumbnail_path);
+  }
+
+  return paths;
+}))];
 
       const response = await fetch('/api/r2-upload', {
         method: 'POST',
@@ -492,6 +500,14 @@ async function loadGallery() {
           v.src = url;
           v.controls = true;
           v.playsInline = true;
+
+
+if (item.thumbnail_path && signedUrls[item.thumbnail_path]) {
+  v.poster = signedUrls[item.thumbnail_path];
+}
+
+
+          
 
           v.addEventListener('loadedmetadata', () => {
             if (v.duration > 0) {
