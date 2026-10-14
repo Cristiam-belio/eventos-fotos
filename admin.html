@@ -380,6 +380,17 @@ Cargando eventos...
 <div class="card">
   <h2>Miniaturas de videos antiguos</h2>
   <p>Genera portadas para los videos sin miniatura.</p>
+
+  <label for="thumbnail-event-select">Selecciona el evento</label>
+<select id="thumbnail-event-select">
+  <option value="">Selecciona un evento...</option>
+</select>
+<p id="thumbnail-event-info" style="font-size:13px;color:#666;">
+  Solo se procesarán videos del evento seleccionado.
+</p>
+  
+  
+  
   <button id="generate-video-thumbnails" type="button" disabled>
     Generar miniaturas pendientes
   </button>
@@ -768,6 +779,24 @@ return;
 }
 
 eventsList.innerHTML='';
+
+
+  const selectorMiniaturas = document.getElementById('thumbnail-event-select');
+const botonMiniaturas = document.getElementById('generate-video-thumbnails');
+
+selectorMiniaturas.innerHTML = '<option value="">Selecciona un evento...</option>';
+botonMiniaturas.disabled = true;
+
+for (const evento of data) {
+  const opcion = document.createElement('option');
+  opcion.value = evento.id;
+  opcion.textContent = evento.name;
+  selectorMiniaturas.appendChild(opcion);
+}
+
+selectorMiniaturas.onchange = () => {
+  botonMiniaturas.disabled = !selectorMiniaturas.value;
+};
 
 for(const event of data){
 
@@ -1870,6 +1899,16 @@ document.getElementById('save-client-password')
   const boton = document.getElementById('generate-video-thumbnails');
   const estado = document.getElementById('video-thumbnails-status');
 
+const selectorEvento = document.getElementById('thumbnail-event-select');
+const eventoId = selectorEvento.value;
+
+if (!eventoId) {
+  estado.textContent = 'Primero selecciona un evento.';
+  return;
+}
+
+    
+
   boton.disabled = true;
   estado.textContent = 'Buscando videos sin miniatura...';
 
@@ -1881,6 +1920,9 @@ document.getElementById('save-client-password')
       .from('media')
       .select('id,file_path,thumbnail_path,media_type')
       .eq('media_type', 'video')
+.eq('event_id', eventoId)
+
+      
       .is('thumbnail_path', null)
       .order('created_at', { ascending: true })
       .limit(1);
@@ -2008,12 +2050,12 @@ document.getElementById('save-client-password')
     estado.textContent = 'Error: ' + err.message;
     console.error(err);
   } finally {
-    boton.disabled = false;
+    boton.disabled = !document.getElementById('thumbnail-event-select').value;
   }
 }
 
 const botonMiniaturas = document.getElementById('generate-video-thumbnails');
-botonMiniaturas.disabled = false;
+botonMiniaturas.disabled = true;
 document.getElementById('video-thumbnails-status').textContent =
   'Herramienta lista. Se procesarán los videos sin miniatura.';
 botonMiniaturas.addEventListener('click', generarMiniaturasAntiguas);
