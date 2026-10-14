@@ -1674,7 +1674,11 @@ primaryInput.value='#2b2723';
 
 secondaryInput.value='#D4AF37';
 
-await loadEvents();
+try {
+  await loadEvents();
+} catch (err) {
+  console.error('Error al actualizar la lista de eventos:', err);
+}
 
 }
 
