@@ -376,6 +376,23 @@ Cargando eventos...
 
 </div>
 
+
+<div class="card">
+  <h2>Miniaturas de videos antiguos</h2>
+  <p>Genera portadas para los videos sin miniatura.</p>
+  <button id="generate-video-thumbnails" type="button" disabled>
+    Generar miniaturas pendientes
+  </button>
+  <div id="video-thumbnails-status" class="status">
+    Herramienta pendiente de activar.
+  </div>
+</div>
+
+
+
+
+
+  
 <div class="card" id="edit-card" style="display:none">
 
 <h2>Editar evento</h2>
@@ -1849,7 +1866,157 @@ document.getElementById('save-client-password')
   });
 
 
-  
+  async function generarMiniaturasAntiguas() {
+  const boton = document.getElementById('generate-video-thumbnails');
+  const estado = document.getElementById('video-thumbnails-status');
+
+  boton.disabled = true;
+  estado.textContent = 'Buscando videos sin miniatura...';
+
+  try {
+    const { data: { session } } = await db.auth.getSession();
+    if (!session) throw new Error('Inicia sesión como administrador.');
+
+    const { data, error } = await db
+      .from('media')
+      .select('id,file_path,thumbnail_path,media_type')
+      .eq('media_type', 'video')
+      .is('thumbnail_path', null)
+      .order('created_at', { ascending: true })
+      .limit(1000);
+
+    if (error) throw error;
+
+    if (!data.length) {
+      estado.textContent = 'Todos los videos consultados tienen miniatura.';
+      return;
+    }
+
+    let completados = 0;
+    let fallidos = 0;
+
+    for (const item of data) {
+      let objectUrl = null;
+      let video = null;
+
+      try {
+        estado.textContent = 'Procesando ' +
+          (completados + fallidos + 1) + ' de ' + data.length;
+
+        const respuesta = await fetch('/api/r2-upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key: item.file_path })
+        });
+        if (!respuesta.ok) throw new Error('No se pudo obtener el video');
+
+        const { viewUrl } = await respuesta.json();
+        const archivo = await fetch(viewUrl);
+        if (!archivo.ok) throw new Error('No se pudo descargar el video');
+
+        objectUrl = URL.createObjectURL(await archivo.blob());
+        video = document.createElement('video');
+        video.muted = true;
+        video.playsInline = true;
+        video.preload = 'auto';
+
+        await new Promise((resolve, reject) => {
+          const timer = setTimeout(() => reject(new Error('Tiempo agotado')), 30000);
+          video.onloadedmetadata = () => {
+            const tiempo = Number.isFinite(video.duration)
+              ? Math.min(0.2, video.duration / 2)
+              : 0;
+            if (tiempo > 0) video.currentTime = tiempo;
+            else {
+              clearTimeout(timer);
+              resolve();
+            }
+          };
+          video.onseeked = () => { clearTimeout(timer); resolve(); };
+          video.onerror = () => {
+            clearTimeout(timer);
+            reject(new Error('No se pudo leer el video'));
+          };
+          video.src = objectUrl;
+          video.load();
+        });
+
+        const canvas = document.createElement('canvas');
+        const ancho = video.videoWidth;
+        const alto = video.videoHeight;
+        if (!ancho || !alto) throw new Error('Video sin dimensiones');
+
+        const escala = Math.min(1, 800 / ancho);
+        canvas.width = Math.round(ancho * escala);
+        canvas.height = Math.round(alto * escala);
+        canvas.getContext('2d').drawImage(
+          video, 0, 0, canvas.width, canvas.height
+        );
+
+        const miniatura = await new Promise(resolve =>
+          canvas.toBlob(resolve, 'image/jpeg', 0.75)
+        );
+        if (!miniatura) throw new Error('No se pudo crear la imagen');
+
+        const nombre = 'miniatura-antigua-' + item.id + '.jpg';
+        const firma = await fetch('/api/r2-upload', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            fileName: nombre,
+            contentType: 'image/jpeg'
+          })
+        });
+        if (!firma.ok) throw new Error('No se pudo preparar la subida');
+
+        const { uploadUrl, key } = await firma.json();
+        const subida = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'image/jpeg' },
+          body: miniatura
+        });
+        if (!subida.ok) throw new Error('No se pudo subir la miniatura');
+
+        const { data: actualizado, error: errorUpdate } = await db
+          .from('media')
+          .update({ thumbnail_path: key })
+          .eq('id', item.id)
+          .is('thumbnail_path', null)
+          .select('id');
+
+        if (errorUpdate) throw errorUpdate;
+        if (!actualizado?.length) {
+          throw new Error('El registro no se actualizó');
+        }
+
+        completados++;
+      } catch (err) {
+        fallidos++;
+        console.error('Miniatura pendiente:', item.id, err);
+      } finally {
+        if (video) {
+          video.removeAttribute('src');
+          video.load();
+        }
+        if (objectUrl) URL.revokeObjectURL(objectUrl);
+      }
+    }
+
+    estado.textContent = 'Terminó: ' + completados +
+      ' miniaturas creadas y ' + fallidos + ' pendientes.';
+  } catch (err) {
+    estado.textContent = 'Error: ' + err.message;
+    console.error(err);
+  } finally {
+    boton.disabled = false;
+  }
+}
+
+const botonMiniaturas = document.getElementById('generate-video-thumbnails');
+botonMiniaturas.disabled = false;
+document.getElementById('video-thumbnails-status').textContent =
+  'Herramienta lista. Se procesarán los videos sin miniatura.';
+botonMiniaturas.addEventListener('click', generarMiniaturasAntiguas);
 
 loadEvents();
 
