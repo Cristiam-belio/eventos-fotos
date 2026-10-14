@@ -1883,7 +1883,7 @@ document.getElementById('save-client-password')
       .eq('media_type', 'video')
       .is('thumbnail_path', null)
       .order('created_at', { ascending: true })
-      .limit(1000);
+      .limit(1);
 
     if (error) throw error;
 
