@@ -469,6 +469,35 @@ Cargando eventos...
 
 >
 
+
+<div style="margin-top:20px; margin-bottom:20px;">
+  <h3>📸 Fotografías de bienvenida</h3>
+
+  <p style="font-size:13px; color:#666;">
+    Selecciona las dos fotografías que aparecerán
+    antes de ingresar a la galería del cliente.
+  </p>
+
+  <label for="edit-welcome-photo-1">
+    Fotografía de bienvenida 1
+  </label>
+  <input
+    id="edit-welcome-photo-1"
+    type="file"
+    accept="image/*"
+  >
+
+  <label for="edit-welcome-photo-2">
+    Fotografía de bienvenida 2
+  </label>
+  <input
+    id="edit-welcome-photo-2"
+    type="file"
+    accept="image/*"
+  >
+</div>
+
+  
 <div
 
   id="edit-cover-preview"
@@ -1731,6 +1760,41 @@ if(coverFile){
 
 }
 
+
+const welcomePhotoPaths = {};
+
+for (const numero of [1, 2]) {
+  const input = document.getElementById('edit-welcome-photo-' + numero);
+  const file = input.files[0];
+
+  if (!file) continue;
+
+  if (!file.type.startsWith('image/')) {
+    alert('Selecciona una imagen válida para la fotografía ' + numero);
+    return;
+  }
+
+  const extension = file.name.split('.').pop().toLowerCase();
+  const path = 'welcome/' + selectedEventId + '-' + numero + '-' + Date.now() + '.' + extension;
+
+  const { error: uploadError } = await db.storage
+    .from(BUCKET)
+    .upload(path, file, { contentType: file.type });
+
+  if (uploadError) {
+    console.error(uploadError);
+    alert('No se pudo subir la fotografía de bienvenida ' + numero);
+    return;
+  }
+
+  welcomePhotoPaths['welcome_photo_' + numero] = path;
+}
+
+
+
+
+
+  
 const {error}=await db
 
 .from('events')
@@ -1762,7 +1826,9 @@ cover_position_x: Number(document.getElementById('edit-cover-x').value),
 
 cover_position_y: Number(document.getElementById('edit-cover-y').value),
 
-cover_zoom: Number(document.getElementById('edit-cover-zoom').value)
+cover_zoom: Number(document.getElementById('edit-cover-zoom').value),
+
+...welcomePhotoPaths
 
 })
 
