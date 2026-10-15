@@ -519,7 +519,9 @@ clientMedia=data;
      
   console.log('Archivos del evento:',data);
 
-   const keys=data.map(item=>item.thumbnail_path || item.file_path);
+   const keys = [...new Set(data.flatMap(item =>
+  [item.file_path, item.thumbnail_path].filter(Boolean)
+))];
 
 const response=await fetch('/api/r2-upload',{
 
@@ -646,22 +648,27 @@ if(item.media_type==='video'){
   const video=document.createElement('video');
 
   video.src=signedUrls[item.file_path];
+  
+if (item.thumbnail_path && signedUrls[item.thumbnail_path]) {
+  video.poster = signedUrls[item.thumbnail_path];
+}
 
+  
   video.preload='metadata';
 
   video.muted=true;
 
   video.playsInline=true;
 
-  video.addEventListener('loadedmetadata',()=>{
+  
 
-    if(video.duration>0){
-
-      video.currentTime=Math.min(0.1,video.duration/2);
-
+  if (!item.thumbnail_path) {
+  video.addEventListener('loadedmetadata', () => {
+    if (video.duration > 0) {
+      video.currentTime = Math.min(0.1, video.duration / 2);
     }
-
-  },{once:true});
+  }, { once: true });
+}
 
   div.appendChild(video);
 
