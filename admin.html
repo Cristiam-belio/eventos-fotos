@@ -495,6 +495,28 @@ Cargando eventos...
     type="file"
     accept="image/*"
   >
+
+
+<div id="welcome-photos-preview"
+     style="display:flex;gap:12px;margin-top:18px;">
+
+  <img id="welcome-preview-1"
+       alt="Fotografía de bienvenida 1"
+       style="width:50%;height:160px;object-fit:cover;
+              border-radius:12px;display:none;">
+
+  <img id="welcome-preview-2"
+       alt="Fotografía de bienvenida 2"
+       style="width:50%;height:160px;object-fit:cover;
+              border-radius:12px;display:none;">
+
+</div>
+
+
+
+
+
+  
 </div>
 
   
@@ -1395,6 +1417,9 @@ previewCard.addEventListener('click',()=>{
 }
 
 let selectedEventCover = null;
+
+
+
   
 async function editEvent(event){
 
@@ -1402,7 +1427,44 @@ selectedEventId=event.id;
 
 selectedEventCover=event.cover_image || null;
 
+for (const numero of [1, 2]) {
 
+  const preview = document.getElementById(
+    'welcome-preview-' + numero
+  );
+
+  const input = document.getElementById(
+    'edit-welcome-photo-' + numero
+  );
+
+  preview.style.display = 'none';
+  preview.removeAttribute('src');
+  input.value = '';
+
+  const path = event['welcome_photo_' + numero];
+
+  if (!path) continue;
+
+  const { data, error } = await db.storage
+    .from(BUCKET)
+    .createSignedUrl(path, 3600);
+
+  if (!error && data?.signedUrl) {
+    preview.src = data.signedUrl;
+    preview.style.display = 'block';
+  } else {
+    console.error(
+      'Error al cargar fotografía de bienvenida ' + numero,
+      error
+    );
+  }
+
+}
+
+
+
+
+  
 const coverPreview =
 
   document.getElementById('edit-cover-preview');
