@@ -318,84 +318,36 @@ const confirmed=confirm(`¿Eliminar ${selectedMedia.size} archivo(s)?\n\nEsta ac
   const filesToDelete=clientMedia.filter(item=>selectedMedia.has(item.id));
 
     try {
+  const clientToken = sessionStorage.getItem('clientToken');
 
-    for(const item of filesToDelete){
+  if (!clientToken) {
+    throw new Error('La sesión del cliente no está disponible');
+  }
 
-    const response=await fetch('/api/r2-delete',{
-
-      method:'POST',
-
-      headers:{'Content-Type':'application/json'},
-
-      body:JSON.stringify({key:item.file_path})
-
+  for (const item of filesToDelete) {
+    const response = await fetch('/api/r2-delete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + clientToken
+      },
+      body: JSON.stringify({
+        key: item.file_path,
+        mediaId: item.id
+      })
     });
 
-    if(!response.ok){
-
-      throw new Error('No se pudo eliminar el archivo de R2');
-
+    if (!response.ok) {
+      const result = await response.json().catch(() => ({}));
+      throw new Error(result.error || 'No se pudo eliminar el archivo');
     }
-
-    if(item.thumbnail_path && item.thumbnail_path!==item.file_path){
-
-      const thumbResponse=await fetch('/api/r2-delete',{
-
-        method:'POST',
-
-        headers:{'Content-Type':'application/json'},
-
-        body:JSON.stringify({key:item.thumbnail_path})
-
-      });
-
-      if(!thumbResponse.ok){
-
-        throw new Error('No se pudo eliminar la miniatura de R2');
-
-      }
-
-    }
-
-
-      
   }
 
-  const deleteResults = await Promise.all(
-
-  filesToDelete.map(item =>
-
-    fetch('/api/r2-delete', {
-
-      method:'POST',
-
-      headers:{'Content-Type':'application/json'},
-
-      body:JSON.stringify({key:item.file_path,mediaId:item.id})
-
-    })
-
-  )
-
-);
-
-const deleteError = deleteResults.some(response => !response.ok);
-
-  if(deleteError){
-
-    throw new Error('No se pudo eliminar el registro de Supabase');
-
-  }
-
-    selectedMedia.clear();
-
-  selectionMode=false;
-
-  selectBtn.textContent='Seleccionar';
-
-  downloadBtn.style.display='none';
-
-  deleteBtn.style.display='none';
+  selectedMedia.clear();
+  selectionMode = false;
+  selectBtn.textContent = 'Seleccionar';
+  downloadBtn.style.display = 'none';
+  deleteBtn.style.display = 'none';
 
   await loadClientGallery();
 
