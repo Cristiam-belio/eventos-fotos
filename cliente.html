@@ -970,6 +970,39 @@ async function prepareClientAccess() {
   }
 
   eventId = data.id;
+
+const savedToken = sessionStorage.getItem('clientToken');
+const savedEventId = sessionStorage.getItem('clientEventId');
+
+if (savedToken && savedEventId === eventId) {
+  try {
+    const payload = JSON.parse(
+      atob(savedToken.split('.')[1].replace(/-/g, '+').replace(/_/g, '/'))
+    );
+
+    if (
+      payload.exp * 1000 > Date.now() &&
+      payload.eventId === eventId &&
+      payload.role === 'client' &&
+      payload.purpose === 'media-management'
+    ) {
+      clientLogin.style.display = 'none';
+      document.querySelector('header').style.display = 'flex';
+      document.querySelector('main').style.display = 'block';
+
+      await loadEventName();
+      await loadClientGallery();
+      return;
+    }
+  } catch (error) {
+    console.warn('Sesión guardada no válida:', error);
+  }
+}
+
+sessionStorage.removeItem('clientToken');
+sessionStorage.removeItem('clientEventId');
+
+  
 }
 
 clientLoginForm.addEventListener('submit', async (e) => {
