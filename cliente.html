@@ -321,6 +321,40 @@ height:76px;
 }
 
 
+/* FLORES DECORATIVAS DE BIENVENIDA */
+
+.welcome-album {
+  position: relative;
+  isolation: isolate;
+}
+
+.welcome-album::before,
+.welcome-album::after {
+  content: "🌸";
+  position: absolute;
+  font-size: 85px;
+  opacity: 0.22;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.welcome-album::before {
+  top: -12px;
+  left: -12px;
+  transform: rotate(-25deg);
+}
+
+.welcome-album::after {
+  bottom: -12px;
+  right: -12px;
+  transform: rotate(25deg);
+}
+
+.welcome-album > * {
+  position: relative;
+  z-index: 1;
+}
+
   
 </style>
 
