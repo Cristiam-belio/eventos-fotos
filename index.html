@@ -109,9 +109,23 @@ clip-path: inset(0 round 24px);
 
 .wrap{max-width:720px;margin:auto;padding:22px 16px}
 
-.card{background:#fff;border-radius:20px;padding:22px;margin:14px 0;box-shadow:0 5px 24px #0000000b}
+.card{
+  background:#fff;
+  border-radius:28px;
+  padding:30px 24px;
+  margin:18px 0;
+  border:1px solid rgba(0,0,0,0.035);
+  box-shadow:0 14px 38px rgba(0,0,0,0.055);
+}
 
-.card h2{font-size:21px;margin-top:0}
+.card h2{
+  font-family:Georgia,serif;
+  font-size:clamp(26px,5vw,34px);
+  font-weight:normal;
+  line-height:1.2;
+  text-align:center;
+  margin:0 0 20px;
+}
 
 .upload{display:block;width:100%;padding:16px;border:0;border-radius:14px;background:var(--primary-color,#2b2723);color:#fff;font-size:17px;font-weight:600;text-align:center;cursor:pointer}
 
@@ -192,13 +206,17 @@ input[type=file]{display:none}
 
 <div class="card">
 
-<h2>📸 Comparte tus recuerdos</h2>
+<h2>A través de tus ojos</h2>
 
-<p>Selecciona las fotos o videos que quieras compartir con la familia y amigos.</p>
+<p style="text-align:center;line-height:1.8;color:#666;">
+  Cada invitado vive una historia diferente.
+  <br><br>
+  Me encantaría descubrir la mía a través de tus fotografías y recuerdos.
+</p>
 
 <label class="upload">
 
-Seleccionar fotos o videos
+Compartir mis recuerdos 
 
 <input id="picker" type="file" accept="image/*,video/*" multiple>
 
