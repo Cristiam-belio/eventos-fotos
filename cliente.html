@@ -420,6 +420,9 @@ const SUPABASE_URL='https://qzsukbfxqdyhpbzlzlwd.supabase.co';
 const SUPABASE_KEY='sb_publishable_CLf1AiL7oKwqFQsG7oYGSg_F8qNl-nk';
 const db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY); 
 
+
+  const BUCKET = 'event-media'; 
+
 let eventId = null;
 const eventSlug = new URLSearchParams(window.location.search).get('evento');
 const eventName=document.getElementById('eventName');
