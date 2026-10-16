@@ -149,6 +149,31 @@ clip-path: inset(0 round 24px);
   line-height: 1.9;
 }
 
+/* TEXTOS DE A TRAVÉS DE TUS OJOS */
+
+#shareMemoriesCard .memories-intro {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  text-align: center;
+  margin: 24px 0 18px;
+}
+
+#shareMemoriesCard .memories-message {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(23px, 5vw, 29px);
+  font-weight: 500;
+  line-height: 1.35;
+  text-align: center;
+  margin: 0 0 28px;
+}
+
+
+
+
+
+  
 #shareMemoriesCard .upload {
   font-family: 'Montserrat', sans-serif;
   font-weight: 600;
@@ -258,10 +283,13 @@ input[type=file]{display:none}
 
 <h2>A través de tus ojos</h2>
 
-<p style="text-align:center;line-height:1.8;color:#666;">
+<p class="memories-intro">
   Cada invitado vive una historia diferente.
-  <br><br>
-  Me encantaría descubrir la mía a través de tus fotografías y recuerdos.
+</p>
+
+<p class="memories-message">
+  Me encantaría descubrir la mía
+  a través de tus fotografías y recuerdos.
 </p>
 
 <label class="upload">
