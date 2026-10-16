@@ -1021,6 +1021,11 @@ const eventUrl =
 
   `${window.location.origin}/?evento=${encodeURIComponent(event.slug)}`;
 
+  
+const clientUrl =
+  `${window.location.origin}/cliente.html?evento=${encodeURIComponent(event.slug)}`;
+
+
 const qrContainer = document.createElement('div');
 
 qrContainer.style.marginTop = '16px';
@@ -1053,7 +1058,41 @@ eventLink.style.display = 'block';
 
 eventLink.style.marginTop = '10px';
 
-const downloadQr = document.createElement('button');
+
+  
+/* ENLACE PRIVADO DEL CLIENTE */
+const clientLink = document.createElement('a');
+clientLink.href = clientUrl;
+clientLink.target = '_blank';
+clientLink.rel = 'noopener noreferrer';
+clientLink.textContent = '🔒 Abrir página del cliente';
+clientLink.style.display = 'block';
+clientLink.style.marginTop = '14px';
+clientLink.style.fontWeight = '600';
+
+const copyClientLink = document.createElement('button');
+copyClientLink.type = 'button';
+copyClientLink.textContent = '📋 Copiar enlace del cliente';
+copyClientLink.style.display = 'block';
+copyClientLink.style.margin = '10px auto';
+copyClientLink.style.padding = '10px 16px';
+copyClientLink.style.cursor = 'pointer';
+
+copyClientLink.addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(clientUrl);
+    copyClientLink.textContent = '✓ Enlace copiado';
+    setTimeout(() => {
+      copyClientLink.textContent = '📋 Copiar enlace del cliente';
+    }, 2000);
+  } catch (error) {
+    window.prompt('Copia el enlace del cliente:', clientUrl);
+  }
+});
+
+  
+  
+  const downloadQr = document.createElement('button');
 
 downloadQr.type = 'button';
 
@@ -1094,6 +1133,11 @@ qrContainer.appendChild(qrTitle);
 qrContainer.appendChild(qrCode);
 
 qrContainer.appendChild(eventLink);
+
+  
+qrContainer.appendChild(clientLink);
+qrContainer.appendChild(copyClientLink);
+
 
 qrContainer.appendChild(downloadQr);
 
