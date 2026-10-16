@@ -321,7 +321,8 @@ height:76px;
 }
 
 
-/* FLORES DECORATIVAS DE BIENVENIDA */
+
+/* FLORES DECORATIVAS EN ACUARELA */
 
 .welcome-album {
   position: relative;
@@ -330,24 +331,28 @@ height:76px;
 
 .welcome-album::before,
 .welcome-album::after {
-  content: "🌸";
+  content: "";
   position: absolute;
-  font-size: 85px;
-  opacity: 0.22;
+  width: 180px;
+  height: 180px;
+  background-image: url("./1B1DD0D6-045B-433F-B0AD-EEAE91127DA2.png");
+  background-repeat: no-repeat;
+  background-size: 260px 260px;
   pointer-events: none;
+  opacity: 0.85;
   z-index: 0;
 }
 
 .welcome-album::before {
-  top: -12px;
-  left: -12px;
-  transform: rotate(-25deg);
+  top: 0;
+  left: 0;
+  background-position: top left;
 }
 
 .welcome-album::after {
-  bottom: -12px;
-  right: -12px;
-  transform: rotate(25deg);
+  bottom: 0;
+  right: 0;
+  background-position: bottom right;
 }
 
 .welcome-album > * {
