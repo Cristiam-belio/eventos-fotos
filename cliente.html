@@ -190,6 +190,137 @@ height:76px;
   z-index:1000;
 
 }
+
+
+/* ===== BIENVENIDA FOTOGRÁFICA DEL CLIENTE ===== */
+
+#clientWelcome {
+  min-height: 100vh;
+  padding: 35px 16px;
+  background: #f7f2ee;
+}
+
+.welcome-album {
+  max-width: 650px;
+  margin: 0 auto;
+  padding: 45px 24px;
+  text-align: center;
+  background:
+    radial-gradient(ellipse at top left, #eadbd7 0%, transparent 35%),
+    radial-gradient(ellipse at bottom right, #e8d6d0 0%, transparent 35%),
+    #fffaf7;
+  border-radius: 24px;
+  box-shadow: 0 12px 35px rgba(80, 55, 50, 0.12);
+  overflow: hidden;
+}
+
+.welcome-heading {
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: #aa8586;
+  margin-bottom: 20px;
+}
+
+#welcomeEventName {
+  font-family: Georgia, serif;
+  font-size: clamp(30px, 6vw, 48px);
+  font-weight: normal;
+  color: #302b2b;
+  margin: 0 0 12px;
+}
+
+#welcomeEventDate {
+  font-size: 12px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: #777;
+  margin-bottom: 35px;
+}
+
+.welcome-photos {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 25px auto 45px;
+  padding: 12px;
+  min-height: 280px;
+}
+
+.welcome-photo-frame {
+  width: 48%;
+  aspect-ratio: 3 / 4;
+  background: white;
+  padding: 9px 9px 20px;
+  box-shadow: 0 8px 22px rgba(0,0,0,0.18);
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+.welcome-photo-left {
+  transform: rotate(-5deg) translateX(8px);
+  z-index: 1;
+}
+
+.welcome-photo-right {
+  transform: rotate(5deg) translateX(-8px);
+  z-index: 2;
+}
+
+.welcome-photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.welcome-album h2 {
+  font-family: Georgia, serif;
+  font-size: 25px;
+  font-weight: normal;
+  color: #403536;
+  margin-bottom: 15px;
+}
+
+.welcome-message {
+  font-size: 15px;
+  line-height: 1.8;
+  color: #686060;
+  max-width: 430px;
+  margin: 0 auto 30px;
+}
+
+#openClientAlbum {
+  background: #b97785;
+  color: white;
+  border: none;
+  border-radius: 40px;
+  padding: 17px 35px;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(185,119,133,0.25);
+}
+
+#openClientAlbum:hover {
+  background: #a76675;
+}
+
+@media (max-width: 480px) {
+  .welcome-album {
+    padding: 35px 15px;
+  }
+
+  .welcome-photos {
+    min-height: 220px;
+    padding: 4px;
+  }
+
+  .welcome-photo-frame {
+    width: 49%;
+    padding: 6px 6px 14px;
+  }
+}
+
+
   
 </style>
 
@@ -209,6 +340,47 @@ height:76px;
     <p id="clientLoginStatus" role="status" style="color:#c62828;font-size:14px;"></p>
   </div>
 </div>
+
+
+
+<!-- PANTALLA DE BIENVENIDA DEL CLIENTE -->
+<section id="clientWelcome" style="display:none;">
+  <div class="welcome-album">
+
+    <div class="welcome-heading">
+      MI ESPACIO DE RECUERDOS
+    </div>
+
+    <h1 id="welcomeEventName"></h1>
+    <p id="welcomeEventDate"></p>
+
+    <div class="welcome-photos">
+      <div class="welcome-photo-frame welcome-photo-left">
+        <img id="clientWelcomePhoto1" alt="Recuerdo del evento">
+      </div>
+
+      <div class="welcome-photo-frame welcome-photo-right">
+        <img id="clientWelcomePhoto2" alt="Recuerdo del evento">
+      </div>
+    </div>
+
+    <h2>Momentos para recordar</h2>
+
+    <p class="welcome-message">
+      Un lugar especial para revivir cada instante,
+      disfrutar tus fotografías y conservar los
+      recuerdos de un día inolvidable.
+    </p>
+
+    <button id="openClientAlbum" type="button">
+      Abrir mi álbum &#8594;
+    </button>
+
+  </div>
+</section>
+<!-- FIN PANTALLA DE BIENVENIDA -->
+
+
 
   
 
@@ -966,6 +1138,64 @@ const clientLoginBtn = document.getElementById('clientLoginBtn');
 document.querySelector('header').style.display = 'none';
 document.querySelector('main').style.display = 'none';
 
+
+// Preparar la pantalla de bienvenida del cliente
+async function loadClientWelcome() {
+  const { data: event, error } = await db
+    .from('events')
+    .select('*')
+    .eq('id', eventId)
+    .single();
+
+  if (error || !event) {
+    throw new Error('No se pudo cargar la bienvenida.');
+  }
+
+  document.getElementById('welcomeEventName').textContent =
+    event.celebrant_names || event.name || '';
+
+  const dateElement = document.getElementById('welcomeEventDate');
+
+  if (event.event_date) {
+    const date = new Date(event.event_date + 'T12:00:00');
+
+    dateElement.textContent = date.toLocaleDateString('es-MX', {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric'
+    });
+  } else {
+    dateElement.textContent = '';
+  }
+
+  for (const numero of [1, 2]) {
+    const img = document.getElementById('clientWelcomePhoto' + numero);
+    const path = event['welcome_photo_' + numero];
+
+    img.style.display = 'none';
+
+    if (!path) continue;
+
+    const { data, error: photoError } = await db.storage
+      .from(BUCKET)
+      .createSignedUrl(path, 3600);
+
+    if (photoError || !data?.signedUrl) continue;
+
+    const x = event['welcome_photo_' + numero + '_x'] ?? 50;
+    const y = event['welcome_photo_' + numero + '_y'] ?? 50;
+    const zoom = event['welcome_photo_' + numero + '_zoom'] ?? 1;
+
+    img.src = data.signedUrl;
+    img.style.objectPosition = `${x}% ${y}%`;
+    img.style.transform = `scale(${zoom})`;
+    img.style.transformOrigin = `${x}% ${y}%`;
+    img.style.display = 'block';
+  }
+}
+
+
+   
 async function prepareClientAccess() {
   if (!eventSlug) {
     clientLoginStatus.textContent = 'El enlace del evento no es válido.';
@@ -1003,11 +1233,12 @@ if (savedToken && savedEventId === eventId) {
       payload.purpose === 'media-management'
     ) {
       clientLogin.style.display = 'none';
-      document.querySelector('header').style.display = 'flex';
-      document.querySelector('main').style.display = 'block';
+document.querySelector('header').style.display = 'none';
+document.querySelector('main').style.display = 'none';
 
-      await loadEventName();
-      await loadClientGallery();
+await loadClientWelcome();
+document.getElementById('clientWelcome').style.display = 'block';
+      
       return;
     }
   } catch (error) {
@@ -1037,6 +1268,7 @@ clientLoginForm.addEventListener('submit', async (e) => {
       body: JSON.stringify({ eventId, password })
     });
 
+
     const result = await response.json();
 
     if (!response.ok || !result.success || !result.token) {
@@ -1047,12 +1279,14 @@ clientLoginForm.addEventListener('submit', async (e) => {
     sessionStorage.setItem('clientEventId', eventId);
 
     document.getElementById('clientPassword').value = '';
-    clientLogin.style.display = 'none';
-    document.querySelector('header').style.display = 'flex';
-    document.querySelector('main').style.display = 'block';
 
-    await loadEventName();
-    await loadClientGallery();
+    
+    clientLogin.style.display = 'none';
+document.querySelector('header').style.display = 'none';
+document.querySelector('main').style.display = 'none';
+
+await loadClientWelcome();
+document.getElementById('clientWelcome').style.display = 'block';
 
   } catch (error) {
     clientLoginStatus.textContent = error.message;
@@ -1061,6 +1295,31 @@ clientLoginForm.addEventListener('submit', async (e) => {
   }
 });
 
+// Abrir el álbum desde la bienvenida fotográfica
+document.getElementById('openClientAlbum').addEventListener('click', async () => {
+  const boton = document.getElementById('openClientAlbum');
+
+  boton.disabled = true;
+  boton.textContent = 'Abriendo álbum...';
+
+  try {
+    await loadEventName();
+    await loadClientGallery();
+
+    document.getElementById('clientWelcome').style.display = 'none';
+    document.querySelector('header').style.display = 'flex';
+    document.querySelector('main').style.display = 'block';
+
+  } catch (error) {
+    console.error('Error al abrir el álbum:', error);
+    alert('No se pudo abrir el álbum. Intenta nuevamente.');
+  } finally {
+    boton.disabled = false;
+    boton.textContent = 'Abrir mi álbum →';
+  }
+});
+
+   
 prepareClientAccess();
 
 
