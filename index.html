@@ -10,6 +10,10 @@
 
 <title>XV Años · Comparte tus recuerdos</title>
 
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;500;600&family=Montserrat:wght@400;500;600&display=swap" rel="stylesheet">
+
+  
+
 <style>
 
 *{box-sizing:border-box}
@@ -119,13 +123,53 @@ clip-path: inset(0 round 24px);
 }
 
 .card h2{
-  font-family:Georgia,serif;
-  font-size:clamp(26px,5vw,34px);
-  font-weight:normal;
-  line-height:1.2;
+  font-family:'Cormorant Garamond',Georgia,serif;
+  font-size:clamp(32px,6vw,42px);
+  font-weight:500;
+  line-height:1.15;
   text-align:center;
   margin:0 0 20px;
 }
+
+
+/* TIPOGRAFÍA EXCLUSIVA DE A TRAVÉS DE TUS OJOS */
+
+#shareMemoriesCard h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(34px, 6vw, 42px);
+  font-weight: 500;
+  line-height: 1.15;
+  text-align: center;
+  margin: 0 0 20px;
+}
+
+#shareMemoriesCard p {
+  font-family: 'Montserrat', sans-serif;
+  font-size: 15px;
+  line-height: 1.9;
+}
+
+#shareMemoriesCard .upload {
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+}
+
+
+.card p{
+  font-family:'Montserrat',sans-serif;
+  font-size:15px;
+  line-height:1.9;
+}
+
+.upload{
+  font-family:'Montserrat',sans-serif;
+  font-weight:600;
+}
+
+
+
+
+  
 
 .upload{display:block;width:100%;padding:16px;border:0;border-radius:14px;background:var(--primary-color,#2b2723);color:#fff;font-size:17px;font-weight:600;text-align:center;cursor:pointer}
 
@@ -204,7 +248,13 @@ input[type=file]{display:none}
 
 <main class="wrap">
 
-<div class="card">
+
+
+
+<div class="card" id="shareMemoriesCard">
+
+
+  
 
 <h2>A través de tus ojos</h2>
 
@@ -216,7 +266,15 @@ input[type=file]{display:none}
 
 <label class="upload">
 
-Compartir mis recuerdos 
+
+  
+
+📸 Compartir mis recuerdos
+
+
+
+
+  
 
 <input id="picker" type="file" accept="image/*,video/*" multiple>
 
