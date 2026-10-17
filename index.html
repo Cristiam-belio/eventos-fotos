@@ -461,9 +461,31 @@ document.querySelector('.hero h1').textContent =
 
   data.name;
   
-document.querySelector('.celebrant').textContent =
+const celebrant = document.querySelector('.celebrant');
+celebrant.textContent = data.celebrant_names || '';
 
-  data.celebrant_names || '';
+function ajustarNombreFestejado() {
+  if (!celebrant || !celebrant.textContent.trim()) return;
+
+  const anchoDisponible = celebrant.clientWidth;
+  if (!anchoDisponible) return;
+
+  celebrant.style.whiteSpace = 'nowrap';
+  celebrant.style.overflowWrap = 'normal';
+
+  const tamañoBase = Math.min(90, Math.max(60, window.innerWidth * 0.17));
+  let tamaño = tamañoBase;
+
+  celebrant.style.fontSize = tamaño + 'px';
+
+  while (celebrant.scrollWidth > anchoDisponible && tamaño > 16) {
+    tamaño -= 1;
+    celebrant.style.fontSize = tamaño + 'px';
+  }
+}
+
+document.fonts.ready.then(ajustarNombreFestejado);
+window.addEventListener('resize', ajustarNombreFestejado);
 
 
   
