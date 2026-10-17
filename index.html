@@ -465,50 +465,7 @@ document.querySelector('.celebrant').textContent =
   data.celebrant_names || '';
 
 
-// AJUSTAR AUTOMÁTICAMENTE EL NOMBRE DEL FESTEJADO
-const celebrantElement = document.querySelector('.celebrant');
-
-function ajustarNombreFestejado() {
-  const nombre = celebranteElement;
-  const anchoDisponible = document.querySelector('.hero').clientWidth - 60;
-
-  nombre.style.whiteSpace = 'nowrap';
-
-  const estilo = window.getComputedStyle(nombre);
-  const medidor = document.createElement('span');
-
-  medidor.textContent = nombre.textContent;
-  medidor.style.fontFamily = estilo.fontFamily;
-  medidor.style.fontWeight = estilo.fontWeight;
-  medidor.style.fontStyle = estilo.fontStyle;
-  medidor.style.letterSpacing = estilo.letterSpacing;
-  medidor.style.whiteSpace = 'nowrap';
-  medidor.style.position = 'absolute';
-  medidor.style.visibility = 'hidden';
-
-  document.body.appendChild(medidor);
-
-  let tamaño = 76;
-
-  while (tamaño > 18) {
-    medidor.style.fontSize = tamaño + 'px';
-
-    if (medidor.getBoundingClientRect().width <= anchoDisponible) {
-      break;
-    }
-
-    tamaño--;
-  }
-
-  nombre.style.fontSize = tamaño + 'px';
-  medidor.remove();
-}
-
-
   
-ajustarNombreFestejado();
-
-window.addEventListener('resize', ajustarNombreFestejado);
   
   
 if(data.cover_image){
