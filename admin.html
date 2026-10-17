@@ -346,13 +346,46 @@ type="text"
 
 placeholder="Una noche para recordar">
 
-<label>Color principal</label>
 
-<input id="primary" type="color" value="#2b2723">
+<label>Estilo decorativo</label>
+<select id="design-style">
+  <option value="floral">Floral romántico</option>
+  <option value="classic">Elegante clásico</option>
+  <option value="minimal">Minimalista</option>
+  <option value="botanical">Botánico natural</option>
+  <option value="celebration">Celebración elegante</option>
+</select>
 
-<label>Color secundario</label>
 
-<input id="secondary" type="color" value="#D4AF37">
+
+<label>Paleta de colores</label>
+<select id="color-palette">
+  <option value="rose">Rosa romántico</option>
+  <option value="champagne">Champaña y oro</option>
+  <option value="sage">Verde salvia</option>
+  <option value="blue">Azul elegante</option>
+  <option value="blackgold">Negro y dorado</option>
+  <option value="silver">Blanco y plata</option>
+  <option value="custom">Personalizada</option>
+</select>
+
+  
+
+<div id="custom-colors" style="display:none;">
+
+  <label>Color de fondo</label>
+  <input id="background-color" type="color" value="#FFF8F1">
+
+  <label>Color principal</label>
+  <input id="primary" type="color" value="#2b2723">
+
+  <label>Color secundario</label>
+  <input id="secondary" type="color" value="#D4AF37">
+
+  <label>Color del texto</label>
+  <input id="text-color" type="color" value="#6F4D59">
+
+</div>
 
 <button id="create">
 
@@ -704,16 +737,49 @@ Cargando eventos...
   
 </div>
 
-
-
-
-
   
+</div>
+
+
+
+<label>Estilo decorativo</label>
+<select id="edit-design-style">
+  <option value="floral">Floral romántico</option>
+  <option value="classic">Elegante clásico</option>
+  <option value="minimal">Minimalista</option>
+  <option value="botanical">Botánico natural</option>
+  <option value="celebration">Celebración elegante</option>
+</select>
+
+<label>Paleta de colores</label>
+<select id="edit-color-palette">
+  <option value="rose">Rosa romántico</option>
+  <option value="champagne">Champaña y oro</option>
+  <option value="sage">Verde salvia</option>
+  <option value="blue">Azul elegante</option>
+  <option value="blackgold">Negro y dorado</option>
+  <option value="silver">Blanco y plata</option>
+  <option value="custom">Personalizada</option>
+</select>
+
+
+
+<div id="edit-custom-colors" style="display:none;">
+
+  <label>Color de fondo</label>
+  <input id="edit-background-color"
+         type="color" value="#FFF8F1">
+
+  <label>Color del texto</label>
+  <input id="edit-text-color"
+         type="color" value="#6F4D59">
+
 </div>
 
 
   
 
+  
 <label>Color principal</label>
 
 <input id="edit-primary" type="color">
@@ -880,6 +946,71 @@ document.getElementById('primary');
 const secondaryInput=
 
 document.getElementById('secondary');
+
+
+
+const colorPalette = document.getElementById('color-palette');
+const customColors = document.getElementById('custom-colors');
+
+const backgroundInput = document.getElementById('background-color');
+const textColorInput = document.getElementById('text-color');
+
+const palettes = {
+  rose: ['#FFF8F1', '#DDA5B6', '#B67B91', '#6F4D59'],
+  champagne: ['#F8F3E9', '#D6B873', '#A88A50', '#4D4032'],
+  sage: ['#F7F5EC', '#A6B9A1', '#718B76', '#374B3D'],
+  blue: ['#F5F7FA', '#9FB7CF', '#496B91', '#253A56'],
+  blackgold: ['#171719', '#C5A15D', '#E8D4A5', '#FAF3E6'],
+  silver: ['#FFFFFF', '#F0F1F3', '#C0C4CA', '#77808C']
+};
+
+function updateColorPalette() {
+  const selected = colorPalette.value;
+
+  if (selected === 'custom') {
+    customColors.style.display = 'block';
+    return;
+  }
+
+  customColors.style.display = 'none';
+
+  const colors = palettes[selected];
+  if (!colors) return;
+
+  backgroundInput.value = colors[0];
+  primaryInput.value = colors[1];
+  secondaryInput.value = colors[2];
+  textColorInput.value = colors[3];
+}
+
+colorPalette.addEventListener('change', updateColorPalette);
+updateColorPalette();
+
+
+
+const editPaletteSelector = document.getElementById('edit-color-palette');
+const editCustomColors = document.getElementById('edit-custom-colors');
+
+function updateEditColorPalette() {
+  const selected = editPaletteSelector.value;
+
+  editCustomColors.style.display =
+    selected === 'custom' ? 'block' : 'none';
+
+  if (selected === 'custom') return;
+
+  const colors = colorPalettes[selected];
+  if (!colors) return;
+
+  document.getElementById('edit-background-color').value = colors[0];
+  document.getElementById('edit-primary').value = colors[1];
+  document.getElementById('edit-secondary').value = colors[2];
+  document.getElementById('edit-text-color').value = colors[3];
+}
+
+editPaletteSelector.addEventListener('change', updateEditColorPalette);
+
+
 
 const createButton=
 
@@ -1696,6 +1827,24 @@ document.getElementById('edit-secondary')
 
 .value=event.secondary_color || '#D4AF37';
 
+
+
+document.getElementById('edit-design-style').value =
+  event.design_style || 'floral';
+
+editPaletteSelector.value =
+  event.color_palette || 'custom';
+
+document.getElementById('edit-background-color').value =
+  event.background_color || '#FFF8F1';
+
+document.getElementById('edit-text-color').value =
+  event.text_color || '#6F4D59';
+
+editCustomColors.style.display =
+  editPaletteSelector.value === 'custom' ? 'block' : 'none';
+
+  
 document.getElementById('selected-id')
 
 .textContent=
@@ -1947,11 +2096,21 @@ slug:slug,
 
 event_type:typeInput.value,
 
-primary_color:primaryInput.value,
 
-secondary_color:secondaryInput.value,
+primary_color: primaryInput.value,
+
+secondary_color: secondaryInput.value,
+
+design_style: document.getElementById('design-style').value,
+
+color_palette: paletteSelector.value,
+
+background_color: backgroundInput.value,
+
+text_color: textColorInput.value,
 
 welcome_message:
+
 
 welcomeInput.value.trim() ||
 
@@ -2103,6 +2262,15 @@ document.getElementById('edit-primary').value,
 secondary_color:
 
 document.getElementById('edit-secondary').value,
+
+design_style: document.getElementById('edit-design-style').value,
+
+color_palette: editPaletteSelector.value,
+
+background_color: document.getElementById('edit-background-color').value,
+
+text_color: document.getElementById('edit-text-color').value,
+  
 
 cover_image: coverPath || selectedEventCover,
 
