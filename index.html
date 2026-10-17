@@ -470,7 +470,7 @@ const celebrantElement = document.querySelector('.celebrant');
 
 function ajustarNombreFestejado() {
   const nombre = celebrantElement;
-  const anchoDisponible = nombre.parentElement.clientWidth - 60;
+  const anchoDisponible = document.querySelector('.hero').clientWidth - 60;
 
   nombre.style.whiteSpace = 'nowrap';
   nombre.style.fontSize = '76px';
