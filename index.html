@@ -463,6 +463,30 @@ document.querySelector('.hero h1').textContent =
 document.querySelector('.celebrant').textContent =
 
   data.celebrant_names || '';
+
+
+// AJUSTAR AUTOMÁTICAMENTE EL NOMBRE DEL FESTEJADO
+const celebrantElement = document.querySelector('.celebrant');
+
+function ajustarNombreFestejado() {
+  const nombre = celebrantElement;
+  const anchoDisponible = nombre.parentElement.clientWidth - 20;
+
+  nombre.style.whiteSpace = 'nowrap';
+  nombre.style.fontSize = '76px';
+
+  let tamaño = 76;
+
+  while (nombre.scrollWidth > anchoDisponible && tamaño > 18) {
+    tamaño -= 1;
+    nombre.style.fontSize = tamaño + 'px';
+  }
+}
+
+ajustarNombreFestejado();
+
+window.addEventListener('resize', ajustarNombreFestejado);
+  
   
 if(data.cover_image){
 
