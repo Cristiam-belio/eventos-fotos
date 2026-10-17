@@ -69,7 +69,7 @@ text-align: center;
 
   display:block;
 
-  width:180px;
+  width: calc(100% - 60px);
 
   height:2px;
 
@@ -470,7 +470,7 @@ const celebrantElement = document.querySelector('.celebrant');
 
 function ajustarNombreFestejado() {
   const nombre = celebrantElement;
-  const anchoDisponible = nombre.parentElement.clientWidth - 20;
+  const anchoDisponible = nombre.parentElement.clientWidth - 60;
 
   nombre.style.whiteSpace = 'nowrap';
   nombre.style.fontSize = '76px';
