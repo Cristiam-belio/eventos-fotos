@@ -170,9 +170,6 @@ clip-path: inset(0 round 24px);
 }
 
 
-
-
-
   
 #shareMemoriesCard .upload {
   font-family: 'Montserrat', sans-serif;
@@ -214,6 +211,27 @@ input[type=file]{display:none}
 
 .gallery img,.gallery video{width:100%;aspect-ratio:1;object-fit:cover;border-radius:12px;background:#eee}
 
+/* PRESENTACIÓN ELEGANTE DE LA GALERÍA */
+.gallery img,
+.gallery video {
+  display: block;
+  border-radius: 16px;
+  border: 3px solid #fff;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.10);
+}
+
+
+ /* TÍTULO ELEGANTE DE LA GALERÍA */
+#galleryCard h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(30px, 5vw, 38px);
+  font-weight: 500;
+  line-height: 1.15;
+  text-align: center;
+  margin: 0 0 20px;
+} 
+
+  
 .empty{padding:30px;text-align:center;color:#877e75;border:1px dashed #d8cfc5;border-radius:15px}
 
 .media-wrap{position:relative}
@@ -326,7 +344,7 @@ Puedes compartir todas las fotos y videos que quieras de esta noche especial
 
 <div class="card">
 
-<h2>🖼️ Galería</h2>
+<h2>Galería</h2>
 
 <div id="gallery" class="empty">Cargando recuerdos…</div>
 
