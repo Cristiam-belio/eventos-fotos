@@ -453,6 +453,19 @@ return;
 
 eventId=data.id;
 
+// Colores principales personalizados del evento
+document.documentElement.style.setProperty(
+  '--primary-color',
+  data.primary_color || '#B67B91'
+);
+
+document.documentElement.style.setProperty(
+  '--secondary-color',
+  data.secondary_color || '#DDA5B6'
+);
+
+  
+
 // Aplicar los colores configurados para este evento
 document.body.style.backgroundColor =
   data.background_color || '#FFF8F1';
