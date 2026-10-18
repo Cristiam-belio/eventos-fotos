@@ -457,6 +457,15 @@ return;
 
 eventId=data.id;
 
+
+// Identificar el estilo decorativo del evento
+document.body.dataset.designStyle =
+  data.design_style || 'classic';
+
+
+
+  
+
 // Colores principales personalizados del evento
 document.documentElement.style.setProperty(
   '--primary-color',
