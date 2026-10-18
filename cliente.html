@@ -1215,30 +1215,32 @@ async function loadClientWelcome() {
     dateElement.textContent = '';
   }
 
-  for (const numero of [1, 2]) {
-    const img = document.getElementById('clientWelcomePhoto' + numero);
-    const path = event['welcome_photo_' + numero];
+  
+await Promise.all([1, 2].map(async (numero) => {
+  const img = document.getElementById('clientWelcomePhoto' + numero);
+  const path = event['welcome_photo_' + numero];
 
-    img.style.display = 'none';
+  img.style.display = 'none';
 
-    if (!path) continue;
+  if (!path) return;
 
-    const { data, error: photoError } = await db.storage
-      .from(BUCKET)
-      .createSignedUrl(path, 3600);
+  const { data, error: photoError } = await db.storage
+    .from(BUCKET)
+    .createSignedUrl(path, 3600);
 
-    if (photoError || !data?.signedUrl) continue;
+  if (photoError || !data?.signedUrl) return;
 
-    const x = event['welcome_photo_' + numero + '_x'] ?? 50;
-    const y = event['welcome_photo_' + numero + '_y'] ?? 50;
-    const zoom = event['welcome_photo_' + numero + '_zoom'] ?? 1;
+  const x = event['welcome_photo_' + numero + '_x'] ?? 50;
+  const y = event['welcome_photo_' + numero + '_y'] ?? 50;
+  const zoom = event['welcome_photo_' + numero + '_zoom'] ?? 1;
 
-    img.src = data.signedUrl;
-    img.style.objectPosition = `${x}% ${y}%`;
-    img.style.transform = `scale(${zoom})`;
-    img.style.transformOrigin = `${x}% ${y}%`;
-    img.style.display = 'block';
-  }
+  img.src = data.signedUrl;
+  img.style.objectPosition = `${x}% ${y}%`;
+  img.style.transform = `scale(${zoom})`;
+  img.style.transformOrigin = `${x}% ${y}%`;
+  img.style.display = 'block';
+}));
+
 }
 
 
