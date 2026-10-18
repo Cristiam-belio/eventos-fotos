@@ -994,12 +994,11 @@ const editCustomColors = document.getElementById('edit-custom-colors');
 function updateEditColorPalette() {
   const selected = editPaletteSelector.value;
 
+  const colors = palettes[selected];
+
   editCustomColors.style.display =
     selected === 'custom' ? 'block' : 'none';
 
-  if (selected === 'custom') return;
-
-  const colors = palettes[selected];
   if (!colors) return;
 
   document.getElementById('edit-background-color').value = colors[0];
@@ -1007,7 +1006,6 @@ function updateEditColorPalette() {
   document.getElementById('edit-secondary').value = colors[2];
   document.getElementById('edit-text-color').value = colors[3];
 }
-
 editPaletteSelector.addEventListener('change', updateEditColorPalette);
 
 
