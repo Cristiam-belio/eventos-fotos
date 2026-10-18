@@ -20,7 +20,11 @@
 
 body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;background:#faf7f2;color:#2b2723}
 
-.hero{padding:42px 20px 16px;text-align:center;background:linear-gradient(135deg,#fff,#f2e8dc)}
+.hero{
+  padding:42px 20px 16px;
+  text-align:center;
+  background:var(--background-color,#FFF8F1);
+}
 
 .eyebrow{
 
@@ -467,6 +471,14 @@ document.documentElement.style.setProperty(
   
 
 // Aplicar los colores configurados para este evento
+
+document.documentElement.style.setProperty(
+  '--background-color',
+  data.background_color || '#FFF8F1'
+);
+
+
+  
 document.body.style.backgroundColor =
   data.background_color || '#FFF8F1';
 
