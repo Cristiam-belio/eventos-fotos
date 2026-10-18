@@ -453,6 +453,14 @@ return;
 
 eventId=data.id;
 
+// Aplicar los colores configurados para este evento
+document.body.style.backgroundColor =
+  data.background_color || '#FFF8F1';
+
+document.body.style.color =
+  data.text_color || '#6F4D59';
+  
+
 document.querySelector('.eyebrow').textContent =
 
   data.welcome_message || 'Una noche para recordar';
