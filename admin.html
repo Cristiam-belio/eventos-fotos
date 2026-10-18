@@ -2167,6 +2167,17 @@ document.getElementById('save-edit')
 if(!selectedEventId)return;
 
 
+// Evitar guardar dos veces al mismo tiempo
+const saveButton = document.getElementById('save-edit');
+
+if (saveButton.disabled) return;
+
+saveButton.disabled = true;
+saveButton.textContent = 'Guardando cambios...';
+
+
+ try { 
+   
 const coverFile =
 
   document.getElementById('edit-cover').files[0];
@@ -2197,6 +2208,10 @@ if(coverFile){
 
     alert('No se pudo subir la foto de portada.');
 
+
+saveButton.disabled = false;
+saveButton.textContent = 'Guardar cambios';
+    
     return;
 
   }
@@ -2267,7 +2282,9 @@ const fotoOptimizada = await optimizarFotoBienvenida(file);
   if (uploadError) {
     console.error(uploadError);
     alert('No se pudo subir la fotografía de bienvenida ' + numero);
-    return;
+    saveButton.disabled = false;
+saveButton.textContent = 'Guardar cambios';
+return;
   }
 
   welcomePhotoPaths['welcome_photo_' + numero] = path;
@@ -2362,6 +2379,21 @@ await loadEvents();
 
 }
 
+
+  
+} catch (error) {
+  console.error('Error al guardar el evento:', error);
+
+  const status = document.getElementById('edit-status');
+  status.textContent = 'Ocurrió un error al guardar los cambios.';
+  status.className = 'status error';
+
+} finally {
+  saveButton.disabled = false;
+  saveButton.textContent = 'Guardar cambios';
+}
+
+   
 });
 
 
