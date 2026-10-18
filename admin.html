@@ -2246,6 +2246,13 @@ async function optimizarFotoBienvenida(file) {
       );
     });
 
+if (blob.type !== 'image/webp') {
+  throw new Error(
+    'El navegador no pudo convertir la fotografía a WebP. Formato generado: ' + blob.type
+  );
+}
+
+    
     return blob;
   } finally {
     imagen.close();
@@ -2385,7 +2392,7 @@ await loadEvents();
   console.error('Error al guardar el evento:', error);
 
   const status = document.getElementById('edit-status');
-  status.textContent = 'Ocurrió un error al guardar los cambios.';
+  status.textContent = 'Error al guardar: ' + error.message;
   status.className = 'status error';
 
 } finally {
