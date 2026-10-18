@@ -999,7 +999,7 @@ function updateEditColorPalette() {
 
   if (selected === 'custom') return;
 
-  const colors = colorPalettes[selected];
+  const colors = palettes[selected];
   if (!colors) return;
 
   document.getElementById('edit-background-color').value = colors[0];
