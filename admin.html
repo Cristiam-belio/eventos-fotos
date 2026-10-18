@@ -2204,6 +2204,43 @@ if(coverFile){
 }
 
 
+
+
+async function optimizarFotoBienvenida(file) {
+  const imagen = await createImageBitmap(file);
+
+  try {
+    const maximo = 1200;
+    const escala = Math.min(
+      1,
+      maximo / Math.max(imagen.width, imagen.height)
+    );
+
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.round(imagen.width * escala);
+    canvas.height = Math.round(imagen.height * escala);
+
+    const contexto = canvas.getContext('2d');
+    contexto.drawImage(imagen, 0, 0, canvas.width, canvas.height);
+
+    const blob = await new Promise((resolve, reject) => {
+      canvas.toBlob(
+        resultado => resultado ? resolve(resultado) : reject(new Error('No se pudo optimizar la fotografía')),
+        'image/webp',
+        0.82
+      );
+    });
+
+    return blob;
+  } finally {
+    imagen.close();
+  }
+}
+
+
+
+
+  
 const welcomePhotoPaths = {};
 
 for (const numero of [1, 2]) {
@@ -2217,12 +2254,15 @@ for (const numero of [1, 2]) {
     return;
   }
 
-  const extension = file.name.split('.').pop().toLowerCase();
+  const extension = 'webp';
   const path = 'welcome/' + selectedEventId + '-' + numero + '-' + Date.now() + '.' + extension;
 
+const fotoOptimizada = await optimizarFotoBienvenida(file);
+
+  
   const { error: uploadError } = await db.storage
     .from(BUCKET)
-    .upload(path, file, { contentType: file.type });
+    .upload(path, fotoOptimizada, { contentType: 'image/webp' });
 
   if (uploadError) {
     console.error(uploadError);
