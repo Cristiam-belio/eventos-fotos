@@ -794,6 +794,9 @@ Guardar cambios
 
 </button>
 
+<div id="edit-status" class="status"></div>
+  
+
 <hr style="margin:24px 0;">
 
 <h3>Acceso del cliente</h3>
@@ -2246,12 +2249,11 @@ async function optimizarFotoBienvenida(file) {
       );
     });
 
-if (blob.type !== 'image/webp') {
+if (!['image/webp', 'image/png'].includes(blob.type)) {
   throw new Error(
-    'El navegador no pudo convertir la fotografía a WebP. Formato generado: ' + blob.type
+    'Formato de imagen no compatible: ' + blob.type
   );
 }
-
     
     return blob;
   } finally {
@@ -2276,15 +2278,18 @@ for (const numero of [1, 2]) {
     return;
   }
 
-  const extension = 'webp';
-  const path = 'welcome/' + selectedEventId + '-' + numero + '-' + Date.now() + '.' + extension;
+  const fotoOptimizada = await optimizarFotoBienvenida(file);
 
-const fotoOptimizada = await optimizarFotoBienvenida(file);
+const extension = fotoOptimizada.type === 'image/webp'
+  ? 'webp'
+  : 'png';
+
+const path = 'welcome/' + selectedEventId + '-' + numero + '-' + Date.now() + '.' + extension;
 
   
   const { error: uploadError } = await db.storage
     .from(BUCKET)
-    .upload(path, fotoOptimizada, { contentType: 'image/webp' });
+    .upload(path, fotoOptimizada, { contentType: fotoOptimizada.type });
 
   if (uploadError) {
     console.error(uploadError);
