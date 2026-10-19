@@ -268,10 +268,24 @@ height:76px;
 /* ===== DISEÑO CLÁSICO ELEGANTE ===== */
 
 #clientWelcome.style-classic .welcome-album {
-  background: #fffdf9;
-  border: 2px solid var(--welcome-accent);
-  border-radius: 8px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.10);
+  background:
+    radial-gradient(
+      ellipse at 85% 15%,
+      rgba(255, 255, 255, 0.95),
+      transparent 55%
+    ),
+    linear-gradient(
+      135deg,
+      #f5ede1 0%,
+      #fffdf8 25%,
+      #eee2d1 48%,
+      #fffaf2 72%,
+      #f2e7d8 100%
+    );
+
+  border: 1px solid var(--welcome-accent);
+  border-radius: 24px;
+  box-shadow: 0 12px 35px rgba(80, 65, 45, 0.12);
 }
 
 #clientWelcome.style-classic .welcome-heading {
@@ -292,7 +306,30 @@ height:76px;
   transform: none;
 }
 
+/* ===== ORQUÍDEA CLÁSICO ELEGANTE ===== */
 
+#clientWelcome.style-classic .welcome-album::before {
+  content: "";
+  position: absolute;
+
+  top: 35px;
+  left: -15px;
+
+  width: 190px;
+  height: 420px;
+
+  background-image: url("./orquidea-clasico-elegante.webp");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position: top left;
+
+  opacity: 0.9;
+  pointer-events: none;
+  z-index: 0;
+}
+
+
+  
 /* ===== DISEÑO MINIMALISTA ===== */
 
 #clientWelcome.style-minimal .welcome-album {
