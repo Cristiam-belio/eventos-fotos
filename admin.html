@@ -1996,7 +1996,21 @@ for (const numero of [1, 2]) {
   });
 }
 
+// Mostrar inmediatamente la fotografía de bienvenida seleccionada
+for (const numero of [1, 2]) {
+  const input = document.getElementById('edit-welcome-photo-' + numero);
+  const preview = document.getElementById('welcome-preview-' + numero);
 
+  input.addEventListener('change', () => {
+    const file = input.files[0];
+    if (!file) return;
+
+    preview.src = URL.createObjectURL(file);
+    preview.style.display = 'block';
+
+    updateWelcomePreview(numero);
+  });
+}
 
 
 
