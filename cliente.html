@@ -195,11 +195,49 @@ height:76px;
 /* ===== BIENVENIDA FOTOGRÁFICA DEL CLIENTE ===== */
 
 #clientWelcome {
+  --welcome-background: #f7f2ee;
+  --welcome-primary: #713d49;
+  --welcome-accent: #b97785;
+
   min-height: 100vh;
   padding: 35px 16px;
-  background: #f7f2ee;
+  background: var(--welcome-background);
 }
 
+/* ===== ESTILOS PREDETERMINADOS ===== */
+
+#clientWelcome.style-floral {
+  --welcome-background: #f7f2ee;
+  --welcome-primary: #713d49;
+  --welcome-accent: #b97785;
+}
+
+#clientWelcome.style-classic {
+  --welcome-background: #f7f4eb;
+  --welcome-primary: #59452b;
+  --welcome-accent: #b39256;
+}
+
+#clientWelcome.style-minimal {
+  --welcome-background: #f5f5f3;
+  --welcome-primary: #292929;
+  --welcome-accent: #666666;
+}
+
+#clientWelcome.style-botanical {
+  --welcome-background: #eef3eb;
+  --welcome-primary: #405c47;
+  --welcome-accent: #78977b;
+}
+
+#clientWelcome.style-celebration {
+  --welcome-background: #edf0f7;
+  --welcome-primary: #263858;
+  --welcome-accent: #bd9858;
+}
+
+
+  
 .welcome-album {
   max-width: 650px;
   margin: 0 auto;
@@ -227,7 +265,7 @@ height:76px;
   font-size: clamp(58px, 11vw, 88px);
   font-weight: 400;
   line-height: 1.15;
-  color: #713d49;
+  color: var(--welcome-primary);
   margin: 0 0 12px;
 }
 
@@ -293,7 +331,7 @@ height:76px;
 }
 
 #openClientAlbum {
-  background: #b97785;
+  background: var(--welcome-accent);
   color: white;
   border: none;
   border-radius: 40px;
@@ -304,7 +342,7 @@ height:76px;
 }
 
 #openClientAlbum:hover {
-  background: #a76675;
+  background: var(--welcome-accent);
 }
 
 @media (max-width: 480px) {
@@ -1198,6 +1236,37 @@ async function loadClientWelcome() {
     throw new Error('No se pudo cargar la bienvenida.');
   }
 
+// Aplicar el estilo predeterminado de bienvenida
+const welcome = document.getElementById('clientWelcome');
+
+const estilosDisponibles = [
+  'floral',
+  'classic',
+  'minimal',
+  'botanical',
+  'celebration'
+];
+
+const estiloSeleccionado = event.design_style || 'floral';
+
+if (welcome) {
+  welcome.classList.remove(
+    ...estilosDisponibles.map(estilo => 'style-' + estilo)
+  );
+
+  welcome.classList.add(
+    'style-' + (
+      estilosDisponibles.includes(estiloSeleccionado)
+        ? estiloSeleccionado
+        : 'floral'
+    )
+  );
+}
+
+
+
+
+  
   document.getElementById('welcomeEventName').textContent =
     event.celebrant_names || event.name || '';
 
