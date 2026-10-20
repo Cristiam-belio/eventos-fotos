@@ -1536,7 +1536,16 @@ if (welcome) {
   );
 }
 
+// Aplicar los colores elegidos en el administrador
+if (welcome) {
+  if (event.primary_color) {
+    welcome.style.setProperty('--welcome-primary', event.primary_color);
+  }
 
+  if (event.secondary_color) {
+    welcome.style.setProperty('--welcome-accent', event.secondary_color);
+  }
+}
 
 
   
