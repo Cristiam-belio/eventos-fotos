@@ -434,9 +434,18 @@ height: 1550px;
   border-radius: 0;
 }
 
-#clientWelcome.style-minimal .welcome-photo-left,
-#clientWelcome.style-minimal .welcome-photo-right {
+/* ===== COMPOSICIÓN EDITORIAL MINIMALISTA ===== */
+
+#clientWelcome.style-minimal .welcome-photo-left {
+  width: 65%;
+  flex: 0 0 65%;
   transform: none;
+}
+
+#clientWelcome.style-minimal .welcome-photo-right {
+  width: 30%;
+  flex: 0 0 30%;
+  transform: translateY(45px);
 }
 
 #clientWelcome.style-minimal .welcome-photos {
