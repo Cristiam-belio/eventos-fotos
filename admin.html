@@ -1707,7 +1707,8 @@ previewCard.addEventListener('click',()=>{
 }
 
 let selectedEventCover = null;
-
+  
+let selectedWelcomePhotos = {};
 
 
   
@@ -1716,6 +1717,11 @@ async function editEvent(event){
 selectedEventId=event.id;
 
 selectedEventCover=event.cover_image || null;
+
+  selectedWelcomePhotos = {
+  welcome_photo_1: event.welcome_photo_1 || null,
+  welcome_photo_2: event.welcome_photo_2 || null
+};
 
   // Limpiar cualquier portada pendiente del evento anterior
 document.getElementById('edit-cover').value = '';
@@ -2284,6 +2290,7 @@ async function optimizarFotoBienvenida(file) {
 
   
 const welcomePhotoPaths = {};
+   const oldWelcomePhotoPaths = {};
 
 for (const numero of [1, 2]) {
   const input = document.getElementById('edit-welcome-photo-' + numero);
@@ -2296,6 +2303,10 @@ for (const numero of [1, 2]) {
     return;
   }
 
+
+
+  oldWelcomePhotoPaths['welcome_photo_' + numero] =
+  selectedWelcomePhotos['welcome_photo_' + numero];
   const fotoOptimizada = await optimizarFotoBienvenida(file);
 
 const extension = 'jpg';
@@ -2403,6 +2414,32 @@ status.textContent=
 
 status.className='status success';
 
+
+
+// Eliminar únicamente fotografías de bienvenida reemplazadas
+for (const numero of [1, 2]) {
+  const campo = 'welcome_photo_' + numero;
+  const rutaAnterior = oldWelcomePhotoPaths[campo];
+  const rutaNueva = welcomePhotoPaths[campo];
+
+  if (
+    rutaAnterior &&
+    rutaNueva &&
+    rutaAnterior !== rutaNueva &&
+    rutaAnterior.startsWith('welcome/' + selectedEventId + '-')
+  ) {
+    const { error: deleteError } = await db.storage
+      .from(BUCKET)
+      .remove([rutaAnterior]);
+
+    if (deleteError) {
+      console.error(
+        'No se pudo eliminar la fotografía anterior:',
+        deleteError
+      );
+    }
+  }
+} 
 await loadEvents();
 
 }
