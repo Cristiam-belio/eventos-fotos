@@ -2441,6 +2441,30 @@ for (const numero of [1, 2]) {
   }
 } 
 
+// PORTADA: eliminar la fotografía anterior después de guardar
+if (
+  coverPath &&
+  selectedEventCover &&
+  coverPath !== selectedEventCover &&
+  selectedEventCover.startsWith('covers/' + selectedEventId + '-')
+) {
+  const { error: coverDeleteError } = await db.storage
+    .from(BUCKET)
+    .remove([selectedEventCover]);
+
+  if (coverDeleteError) {
+    console.error(
+      'No se pudo eliminar la portada anterior:',
+      coverDeleteError
+    );
+  }
+}
+
+// Actualizar la referencia de la portada actual
+if (coverPath) {
+  selectedEventCover = coverPath;
+}
+  
 // Actualizar las fotografías actuales después de guardar
 selectedWelcomePhotos = {
   ...selectedWelcomePhotos,
