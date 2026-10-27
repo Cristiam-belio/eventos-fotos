@@ -2414,7 +2414,13 @@ status.textContent=
 
 status.className='status success';
 
-
+// Ocultar la confirmación después de 3 segundos
+setTimeout(() => {
+  if (status.textContent === 'Cambios guardados correctamente.') {
+    status.textContent = '';
+    status.className = 'status';
+  }
+}, 3000);
 
 // Eliminar únicamente fotografías de bienvenida reemplazadas
 for (const numero of [1, 2]) {
