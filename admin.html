@@ -2440,6 +2440,14 @@ for (const numero of [1, 2]) {
     }
   }
 } 
+
+// Actualizar las fotografías actuales después de guardar
+selectedWelcomePhotos = {
+  ...selectedWelcomePhotos,
+  ...welcomePhotoPaths
+};
+
+  
 await loadEvents();
 
 }
