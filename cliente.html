@@ -503,11 +503,59 @@ text-shadow: 0 2px 3px rgba(40, 40, 40, 0.35);
   font-weight: normal;
   color: var(--welcome-primary);
 }
-
-#clientWelcome.style-botanical .welcome-photo-frame {
-  border-radius: 12px;
+  
+/* CUERDA PARA FOTOGRAFÍAS - BOTÁNICO NATURAL */
+#clientWelcome.style-botanical .welcome-photos {
+  position: relative;
+  padding-top: 45px;
 }
 
+#clientWelcome.style-botanical .welcome-photos::before {
+  content: "";
+  position: absolute;
+  top: 34px;
+  left: 3%;
+  right: 3%;
+  height: 2px;
+  background: #a58b69;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(80, 60, 40, 0.2);
+  transform: rotate(-1deg);
+  z-index: 4;
+  pointer-events: none;
+}
+  
+  
+  #clientWelcome.style-botanical .welcome-photo-frame {
+  position: relative;
+  overflow: visible;
+  border-radius: 2px;
+  background: #faf6ec;
+  padding: 9px 9px 22px;
+}
+
+/* PINZAS DE MADERA - BOTÁNICO NATURAL */
+#clientWelcome.style-botanical .welcome-photo-frame::before {
+  content: "";
+  position: absolute;
+  top: -12px;
+  left: 50%;
+  transform: translateX(-50%) rotate(5deg);
+  width: 13px;
+  height: 30px;
+  background: linear-gradient(
+    90deg,
+    #b58a58 0%,
+    #e0bf8e 35%,
+    #c49a68 75%,
+    #a77a49 100%
+  );
+  border: 1px solid #9c784e;
+  border-radius: 3px;
+  box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+}
+  
 #clientWelcome.style-botanical .welcome-photo-left {
   transform: rotate(-3deg) translateX(8px);
 }
